@@ -23,17 +23,10 @@ extern "C" void CreateReport(rapidjson::Value& request,
                              rapidjson::Value& response,
                              rapidjson::Document::AllocatorType& allocator,
                              CServerInterface* server) {
-    // Структура накопления итогов
-    struct Total {
-        double balance;
-        std::string currency;
-    };
-
-    std::unordered_map<std::string, Total> totals_map;
-
     std::string group_mask;
     int from;
     int to;
+    int from_two_weeks_ago;
     if (request.HasMember("group") && request["group"].IsString()) {
         group_mask = request["group"].GetString();
     }
@@ -42,24 +35,19 @@ extern "C" void CreateReport(rapidjson::Value& request,
     }
     if (request.HasMember("to") && request["to"].IsNumber()) {
         to = request["to"].GetInt();
+        from_two_weeks_ago = utils::CalculateFromTwoWeeksAgo(to);
     }
 
-    std::cout << "Group mask: " << group_mask << std::endl;
-    std::cout << "from: " << from << std::endl;
-    std::cout << "to: " << to << std::endl;
-
-    std::vector<TradeRecord> trades_vector;
-    std::vector<GroupRecord> groups_vector;
+    std::cout << "Group mask: " <<  group_mask<< std::endl;
+    std::cout << "From: " <<  from<< std::endl;
+    std::cout << "To: " <<  to<< std::endl;
+    std::cout << "From two weeks ago: " <<  from_two_weeks_ago<< std::endl;
 
     try {
-        server->GetTransactionsByGroup(group_mask, from, to, &trades_vector);
-        server->GetAllGroups(&groups_vector);
-    } catch (const std::exception& e) {
-        std::cout << "[DepositWithdrawalReportInterface]: " << e.what() << std::endl;
-    }
 
-    std::cout << "Trades size: " << trades_vector.size() << std::endl;
-    std::cout << "Groups size: " << groups_vector.size() << std::endl;
+    } catch (const std::exception& e) {
+        std::cout << "[DailyTradesReportInterface]: " << e.what() << std::endl;
+    }
 
     // Лямбда подготавливающая значения double для вставки в AST (округление до 2-х знаков)
     auto format_for_AST = [](double value) -> std::string {
@@ -68,46 +56,8 @@ extern "C" void CreateReport(rapidjson::Value& request,
         return oss.str();
     };
 
-    auto make_table = [&](const std::vector<TradeRecord>& trades) -> Node {
-        std::vector<Node> thead_rows;
-        std::vector<Node> tbody_rows;
-        std::vector<Node> tfoot_rows;
-
-        // Thead
-        thead_rows.push_back(tr({
-            th({div({text("Order")})}),
-            th({div({text("Login")})}),
-            th({div({text("Name")})}),
-            th({div({text("Time")})}),
-            th({div({text("Comment")})}),
-            th({div({text("Amount")})}),
-            th({div({text("Currency")})}),
-        }));
-
-        for (const auto& trade : trades_vector) {
-            if (trade.cmd == OP_BALANCE_IN || trade.cmd == OP_BALANCE_OUT) {
-                tbody_rows.push_back(tr({
-                    td({div({text(std::to_string(trade.order))})}),
-                    td({div({text(std::to_string(trade.login))})}),
-                    td({div({text("NAME")})}),
-                    td({div({text(std::to_string(trade.timestamp))})}),
-                    td({div({text(trade.comment)})}),
-                    td({div({text(format_for_AST(trade.profit))})}),
-                    td({div({text("CURRENCY")})}),
-                }));
-            }
-        }
-
-        return table({
-            thead(thead_rows),
-            tbody(tbody_rows),
-            tfoot(tfoot_rows),
-        }, props({{"className", "table"}}));
-    };
-
     const Node report = div({
-        h1({ text("Deposit Withdrawal Report") }),
-        make_table(trades_vector),
+        h1({ text("Daily Trades Report") }),
     });
 
     utils::CreateUI(report, response, allocator);
