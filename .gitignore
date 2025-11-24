@@ -1,0 +1,70 @@
+# ========================
+# C++ build artifacts
+# ========================
+
+# Object files
+*.o
+*.obj
+*.lo
+*.slo
+
+# Precompiled headers
+*.gch
+*.pch
+
+# Static libraries
+*.a
+*.lib
+*.lai
+*.la
+
+# Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Executables
+*.exe
+*.out
+*.app
+
+# Debugging files
+*.pdb
+*.dwo
+*.dSYM/
+
+# Temporary files
+*.tmp
+*.log
+
+# ========================
+# CMake / Build folders
+# ========================
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+build/
+release/
+dist/
+cmake-build-*/
+
+# ========================
+# IDEs
+# ========================
+
+# CLion
+.idea/
+
+# VSCode
+.vscode/
+
+# ========================
+# OS-specific
+# ========================
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
