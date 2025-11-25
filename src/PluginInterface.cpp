@@ -41,7 +41,7 @@ extern "C" void CreateReport(rapidjson::Value& request,
 
     try {
         server->GetCloseTradesByGroup(group_mask, from_two_weeks_ago, to, &close_trades_vector);
-        server->GetOpenTradesByGroup(group_mask, from_two_weeks_ago, to, &close_trades_vector);
+        server->GetOpenTradesByGroup(group_mask, from_two_weeks_ago, to, &open_trades_vector);
     } catch (const std::exception& e) {
         std::cerr << "[DailyTradesReportInterface]: " << e.what() << std::endl;
     }
