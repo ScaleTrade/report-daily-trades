@@ -25,7 +25,6 @@ extern "C" void CreateReport(rapidjson::Value& request,
     int from;
     int to;
     int from_two_weeks_ago;
-    int to_two_weeks_ago;
     if (request.HasMember("group") && request["group"].IsString()) {
         group_mask = request["group"].GetString();
     }
@@ -35,14 +34,13 @@ extern "C" void CreateReport(rapidjson::Value& request,
     }
     if (request.HasMember("to") && request["to"].IsNumber()) {
         to = request["to"].GetInt();
-        to_two_weeks_ago = utils::CalculateTimestampForTwoWeeksAgo(to);
     }
 
     std::vector<TradeRecord> close_trades_vector;
 
     try {
         // 1735689600, 1764075600
-        server->GetCloseTradesByGroup(group_mask, from_two_weeks_ago, to_two_weeks_ago, &close_trades_vector);
+        server->GetCloseTradesByGroup(group_mask, from_two_weeks_ago, to, &close_trades_vector);
     } catch (const std::exception& e) {
         std::cerr << "[DailyTradesReportInterface]: " << e.what() << std::endl;
     }
