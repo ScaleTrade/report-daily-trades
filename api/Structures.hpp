@@ -911,9 +911,9 @@ struct CServerInterface {
     virtual int GetOpenTradesByLogin(int login, std::vector<TradeRecord>* trades);
     virtual int GetOpenTradesByMagic(int magic, std::vector<TradeRecord>* trades);
     virtual int GetOpenTradeByOrder(int order, TradeRecord* trade);
-    virtual int GetOpenTradesByGroup(const std::string& FilterGroup, time_t from, time_t to, std::vector<TradeRecord>* trades);
+    virtual int GetOpenTradesByGroup(const std::string& group_name, time_t from, time_t to, std::vector<TradeRecord>* trades);
     virtual int GetCloseTradesByLogin(int login, std::vector<TradeRecord>* trades);
-    virtual int GetCloseTradesByGroup(const std::string& FilterGroup, time_t from, time_t to, std::vector<TradeRecord>* trades);
+    virtual int GetCloseTradesByGroup(const std::string& group_name, time_t from, time_t to, std::vector<TradeRecord>* trades);
     virtual int GetAllOpenTrades(std::vector<TradeRecord>* trades);
 
     //+------------------------------------------------------------------+
@@ -923,7 +923,7 @@ struct CServerInterface {
     virtual int BalanceOut(int login, double amount, const std::string& comment);
     virtual int CreditIn(int login, double amount, const std::string& comment);
     virtual int CreditOut(int login, double amount, const std::string& comment);
-    virtual int GetTransactionsByGroup(const std::string& FilterGroup, time_t from, time_t to, std::vector<TradeRecord>* trades);
+    virtual int GetTransactionsByGroup(const std::string& group_name, time_t from, time_t to, std::vector<TradeRecord>* trades);
 
     //+------------------------------------------------------------------+
     // Symbols

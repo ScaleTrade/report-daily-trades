@@ -38,10 +38,15 @@ extern "C" void CreateReport(rapidjson::Value& request,
         to_two_weeks_ago = utils::CalculateTimestampForTwoWeeksAgo(to);
     }
 
+    std::cout << "from: : " << from << std::endl;
+    std::cout << "to : " << to << std::endl;
+    std::cout << "2w from : " << from_two_weeks_ago << std::endl;
+    std::cout << "2w to : " << to_two_weeks_ago << std::endl;
+
     std::vector<TradeRecord> close_trades_vector;
 
     try {
-        server->GetCloseTradesByGroup(group_mask, from_two_weeks_ago, to_two_weeks_ago, &close_trades_vector);
+        server->GetCloseTradesByGroup(group_mask, 1735689600, 1764075600, &close_trades_vector);
     } catch (const std::exception& e) {
         std::cerr << "[DailyTradesReportInterface]: " << e.what() << std::endl;
     }
