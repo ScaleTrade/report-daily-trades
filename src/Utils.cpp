@@ -200,31 +200,28 @@ namespace utils {
         double total_profit = 0.0;
         double total_loss = 0.0;
 
-        // Суммируем открытые позиции
         for (const auto& trade : trades) {
-            if (trade.state == 0) {
-                if (trade.profit >= 0)
-                    total_profit += trade.profit;
-                else
-                    total_loss += -trade.profit;
-            }
+            if (trade.profit >= 0)
+                total_profit += trade.profit;
+            else
+                total_loss += -trade.profit; // убыток как положительное число
         }
 
         double total = total_profit + total_loss;
-        if (total == 0) return JSONArray{};
+        if (total == 0.0) return JSONArray{}; // нет открытых позиций с P/L
 
         JSONArray chart_data;
 
         if (total_profit > 0) {
             JSONObject profit_point;
-            profit_point["name"] = JSONValue("Profit");
+            profit_point["name"]  = JSONValue("Profit");
             profit_point["value"] = JSONValue((total_profit / total) * 100.0);
             chart_data.emplace_back(profit_point);
         }
 
         if (total_loss > 0) {
             JSONObject loss_point;
-            loss_point["name"] = JSONValue("Loss");
+            loss_point["name"]  = JSONValue("Loss");
             loss_point["value"] = JSONValue((total_loss / total) * 100.0);
             chart_data.emplace_back(loss_point);
         }
