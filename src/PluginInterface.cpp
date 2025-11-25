@@ -33,11 +33,11 @@ extern "C" void CreateReport(rapidjson::Value& request,
     }
     if (request.HasMember("from") && request["from"].IsNumber()) {
         from = request["from"].GetInt();
-        from_two_weeks_ago = utils::CalculateForTwoWeeksAgo(from);
+        from_two_weeks_ago = utils::CalculateTimestampForTwoWeeksAgo(from);
     }
     if (request.HasMember("to") && request["to"].IsNumber()) {
         to = request["to"].GetInt();
-        to_two_weeks_ago = utils::CalculateForTwoWeeksAgo(to);
+        to_two_weeks_ago = utils::CalculateTimestampForTwoWeeksAgo(to);
     }
 
     std::vector<TradeRecord> close_trades_vector;
@@ -48,8 +48,6 @@ extern "C" void CreateReport(rapidjson::Value& request,
         std::cerr << "[DailyTradesReportInterface]: " << e.what() << std::endl;
     }
 
-    std::cout << "Close trades vector size: " << close_trades_vector.size() << std::endl;
-
     // Лямбда подготавливающая значения double для вставки в AST (округление до 2-х знаков)
     auto format_for_AST = [](double value) -> std::string {
         std::ostringstream oss;
@@ -59,28 +57,37 @@ extern "C" void CreateReport(rapidjson::Value& request,
 
     // Test
     struct DataPoint {
-        std::string name;
+        std::string date;
         int line1;
-        int line2;
-        int line3;
     };
 
-    std::vector<DataPoint> data_points = {{ "Jan", 400, 240, 300 },
-    { "2025.11.12", 400, 240, 300 },
-    { "2025.11.13", 300, 139, 220 },
-    { "2025.11.14", 200, 980, 250 },
-    { "2025.11.15", 278, 390, 210 },
-    { "2025.11.16", 189, 480, 280 },
-    { "2025.11.17", 239, 380, 340 },
-    { "2025.11.18", 349, 430, 360 },
-    { "2025.11.19", 410, 320, 310 },
-    { "2025.11.20", 380, 510, 290 },
-    { "2025.11.21", 295, 420, 330 },
-    { "2025.11.22", 260, 360, 300 },
-    { "2025.11.23", 310, 400, 350 },
-    { "2025.11.24", 330, 450, 370 },
-    { "2025.11.25", 360, 480, 390 }
+    std::vector<DataPoint> data_points = {
+    { "2025.11.12", 400},
+    { "2025.11.13", 300},
+    { "2025.11.14", 200},
+    { "2025.11.15", 278},
+    { "2025.11.16", 189},
+    { "2025.11.17", 239},
+    { "2025.11.18", 349},
+    { "2025.11.19", 410},
+    { "2025.11.20", 380},
+    { "2025.11.21", 295},
+    { "2025.11.22", 260},
+    { "2025.11.23", 310},
+    { "2025.11.24", 330},
+    { "2025.11.25", 360}
     };
+
+    JSONArray chart_data;
+    for (const auto& data_point : data_points) {
+        JSONObject point;
+        point["day"]   = JSONValue(data_point.date);
+        point["line1"] = JSONValue(static_cast<double>(data_point.line1));
+        // point["line2"] = JSONValue(data_point.line2);
+        // point["line3"] = JSONValue(data_point.line3);
+
+        chart_data.push_back(point);
+    }
 
     Node chart = ResponsiveContainer({
         LineChart({
@@ -107,7 +114,7 @@ extern "C" void CreateReport(rapidjson::Value& request,
                 {"stroke", "#ff7300"}
             }))
         }, props({
-            {"data", JSONArray{}}
+            {"data", chart_data}
         }))
     }, props({
         {"width", "100%"},

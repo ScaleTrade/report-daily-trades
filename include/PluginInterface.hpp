@@ -1,11 +1,12 @@
 #pragma once
 
-#include <rapidjson/document.h>
+#include <vector>
 #include <sstream>
 #include <thread>
 #include <atomic>
 #include <string>
 #include "Structures.hpp"
+#include <rapidjson/document.h>
 #include "ast/Ast.hpp"
 #include "Utils.hpp"
 

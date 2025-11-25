@@ -1,6 +1,12 @@
 #pragma once
 
+#include <vector>
+#include <string>
+#include <map>
 #include <ctime>
+#include <iomanip>
+#include <sstream>
+#include <iostream>
 #include "ast/Ast.hpp"
 #include "Structures.hpp"
 
@@ -9,5 +15,7 @@ namespace utils {
               rapidjson::Value& response,
               rapidjson::Document::AllocatorType& allocator);
 
-    int CalculateForTwoWeeksAgo(const int timestamp);
+    int CalculateTimestampForTwoWeeksAgo(const int timestamp);
+
+    std::string FormatDateForeChart(time_t time);
 }

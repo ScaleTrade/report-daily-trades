@@ -96,8 +96,21 @@ namespace utils {
         response.AddMember("ui", ui_object, allocator);
     }
 
-    int CalculateForTwoWeeksAgo(const int timestamp) {
+    int CalculateTimestampForTwoWeeksAgo(const int timestamp) {
         constexpr int two_weeks_interval = 14 * 24 * 60 * 60;
         return timestamp - two_weeks_interval;
     }
+
+    std::string FormatDateForeChart(time_t time) {
+        std::tm tm{};
+        #ifdef _WIN32
+                localtime_s(&tm, &t);
+        #else
+                localtime_r(&time, &tm);
+        #endif
+                std::ostringstream oss;
+                oss << std::put_time(&tm, "%Y.%m.%d");
+                return oss.str();
+            }
+
 }
