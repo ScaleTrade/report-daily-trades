@@ -196,6 +196,21 @@ namespace utils {
         return chart_data;
     }
 
+    std::vector<TradeRecord> CreateTopProfitOrdersVector(const std::vector<TradeRecord>& trades) {
+        std::vector sorted_trades = trades;
+
+        std::sort(sorted_trades.begin(), sorted_trades.end(),
+                  [](const TradeRecord& a, const TradeRecord& b) {
+                      return a.profit > b.profit;
+                  });
+
+        if (sorted_trades.size() > 10) {
+            sorted_trades.resize(10);
+        }
+
+        return sorted_trades;
+    }
+
     std::vector<TradeRecord> CreateTopLossOrdersVector(const std::vector<TradeRecord>& trades) {
         std::vector sorted_trades = trades;
 

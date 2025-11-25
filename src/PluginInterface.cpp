@@ -120,8 +120,8 @@ extern "C" void CreateReport(rapidjson::Value& request,
         {"height", 300.0}
     }));
 
-    // Top loss orders table
-    std::vector<TradeRecord> top_loss_orders_vector = utils::CreateTopLossOrdersVector(close_trades_vector);
+    // Top profit orders table
+    std::vector<TradeRecord> top_profit_orders_vector = utils::CreateTopLossOrdersVector(close_trades_vector);
 
     auto create_top_loss_orders_table = [&](const std::vector<TradeRecord>& trades) -> Node {
         std::vector<Node> thead_rows;
@@ -137,23 +137,84 @@ extern "C" void CreateReport(rapidjson::Value& request,
             th({div({text("Group")})}),
             th({div({text("Type")})}),
             th({div({text("Volume")})}),
-            th({div({text("Price")})}),
+            th({div({text("Close Price")})}),
             th({div({text("Swap")})}),
             th({div({text("Profit")})})
         }));
 
         // Tbody
         for (const auto& trade : trades) {
+            AccountRecord account;
+
+            try {
+                server->GetAccountByLogin(trade.login, &account);
+            } catch (const std::exception& e) {
+                std::cerr << "[DailyTradesReportInterface]: " << e.what() << std::endl;
+            }
+
             tbody_rows.push_back(tr({
                 td({div({text(std::to_string(trade.order))})}),
                 td({div({text(std::to_string(trade.login))})}),
-                th({div({text("Name")})}),
+                td({div({text(account.name)})}),
                 td({div({text(trade.symbol)})}),
-                th({div({text("Group")})}),
-                th({div({text(trade.cmd == 0 ? "buy" : "sell")})}),
+                td({div({text(account.group)})}),
+                td({div({text(trade.cmd == 0 ? "buy" : "sell")})}),
                 td({div({text(std::to_string(trade.volume))})}),
                 td({div({text(std::to_string(trade.close_price))})}),
-                th({div({text("Swap")})}),
+                td({div({text("Swap")})}),
+                td({div({text(std::to_string(trade.profit))})}),
+            }));
+        }
+
+        return table({
+            thead(thead_rows),
+            tbody(tbody_rows),
+            tfoot(tfoot_rows),
+        }, props({{"className", "table"}}));
+    };
+
+    // Top loss orders table
+    std::vector<TradeRecord> top_loss_orders_vector = utils::CreateTopLossOrdersVector(close_trades_vector);
+
+    auto create_top_profit_orders_table = [&](const std::vector<TradeRecord>& trades) -> Node {
+        std::vector<Node> thead_rows;
+        std::vector<Node> tbody_rows;
+        std::vector<Node> tfoot_rows;
+
+        // Thead
+        thead_rows.push_back(tr({
+            th({div({text("Order")})}),
+            th({div({text("Login")})}),
+            th({div({text("Name")})}),
+            th({div({text("Symbol")})}),
+            th({div({text("Group")})}),
+            th({div({text("Type")})}),
+            th({div({text("Volume")})}),
+            th({div({text("Close Price")})}),
+            th({div({text("Swap")})}),
+            th({div({text("Profit")})})
+        }));
+
+        // Tbody
+        for (const auto& trade : trades) {
+            AccountRecord account;
+
+            try {
+                server->GetAccountByLogin(trade.login, &account);
+            } catch (const std::exception& e) {
+                std::cerr << "[DailyTradesReportInterface]: " << e.what() << std::endl;
+            }
+
+            tbody_rows.push_back(tr({
+                td({div({text(std::to_string(trade.order))})}),
+                td({div({text(std::to_string(trade.login))})}),
+                td({div({text(account.name)})}),
+                td({div({text(trade.symbol)})}),
+                td({div({text(account.group)})}),
+                td({div({text(trade.cmd == 0 ? "buy" : "sell")})}),
+                td({div({text(std::to_string(trade.volume))})}),
+                td({div({text(std::to_string(trade.close_price))})}),
+                td({div({text("Swap")})}),
                 td({div({text(std::to_string(trade.profit))})}),
             }));
         }
@@ -171,6 +232,8 @@ extern "C" void CreateReport(rapidjson::Value& request,
         pnl_chart,
         h2({text("Client Trades Count")}),
         trades_count_chart,
+        h2({text("Top Profit Orders")}),
+        create_top_profit_orders_table(top_loss_orders_vector),
         h2({text("Top Loss Orders")}),
         create_top_loss_orders_table(top_loss_orders_vector),
     });

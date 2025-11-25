@@ -29,5 +29,7 @@ namespace utils {
 
     JSONArray CreateTradesCountChartData(const std::vector<TradeRecord>& trades);
 
+    std::vector<TradeRecord> CreateTopProfitOrdersVector(const std::vector<TradeRecord>& trades);
+
     std::vector<TradeRecord> CreateTopLossOrdersVector(const std::vector<TradeRecord>& trades);
 }
