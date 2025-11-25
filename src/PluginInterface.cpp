@@ -39,6 +39,7 @@ extern "C" void CreateReport(rapidjson::Value& request,
     }
 
     std::vector<TradeRecord> close_trades_vector;
+    std::cout << "Close trades vector size: : " << close_trades_vector.size() << std::endl;
 
     try {
         server->GetCloseTradesByGroup(group_mask, from_two_weeks_ago, to_two_weeks_ago, &close_trades_vector);
@@ -90,6 +91,7 @@ extern "C" void CreateReport(rapidjson::Value& request,
 
     const Node report = div({
         h1({ text("Daily Trades Report") }),
+        h2({ text("Profit and Loss of Clients, USD") }),
         chart
     });
 
