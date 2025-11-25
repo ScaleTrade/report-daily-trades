@@ -136,8 +136,6 @@ namespace utils {
             data_points.push_back(data_point);
         }
 
-        std::cout << "Data points length: " << data_points.size() << std::endl;
-
         std::sort(data_points.begin(), data_points.end(),
                 [](const PnlDataPoint& a,const PnlDataPoint& b) {
                         return a.date < b.date;

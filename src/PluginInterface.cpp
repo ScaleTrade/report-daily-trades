@@ -227,7 +227,7 @@ extern "C" void CreateReport(rapidjson::Value& request,
     };
 
     // Total current positions chart
-    const JSONArray current_positions_chart_data = utils::CreateOpenPositionsPieChartData(open_trades_vector);
+    const JSONArray current_positions_chart_data = utils::CreateOpenPositionsPieChartData(close_trades_vector);
 
     Node current_positions_pie_chart = ResponsiveContainer({
         PieChart({
