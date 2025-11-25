@@ -8,3 +8,9 @@ struct PnlDataPoint {
     int loss;
     int total;
 };
+
+struct TradesCountDataPoint {
+    std::string date;
+    int profit;
+    int loss;
+};

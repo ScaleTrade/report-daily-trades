@@ -114,26 +114,6 @@ namespace utils {
             }
 
     JSONArray CreatePnlChartData(const std::vector<TradeRecord>& trades) {
-        std::cout << "Trades length: " << trades.size() << std::endl;
-
-        // Mock data
-        std::vector<PnlDataPoint> data_points_mock = {
-            { "2025.11.12", 500, -100, 400 },
-            { "2025.11.13", 350, -50, 300 },
-            { "2025.11.14", 250, -50, 200 },
-            { "2025.11.15", 320, -42, 278 },
-            { "2025.11.16", 220, -31, 189 },
-            { "2025.11.17", 280, -41, 239 },
-            { "2025.11.18", 420, -71, 349 },
-            { "2025.11.19", 500, -90, 410 },
-            { "2025.11.20", 450, -70, 380 },
-            { "2025.11.21", 350, -55, 295 },
-            { "2025.11.22", 300, -40, 260 },
-            { "2025.11.23", 370, -60, 310 },
-            { "2025.11.24", 400, -70, 330 },
-            { "2025.11.25", 450, -90, 360 }
-        };
-
         std::map<std::string, PnlDataPoint> daily_data;
 
         for (const auto& trade : trades) {
@@ -158,10 +138,10 @@ namespace utils {
 
         std::cout << "Data points length: " << data_points.size() << std::endl;
 
-        std::sort(data_points.begin(), data_points.end(), [](const PnlDataPoint& a,
-                                                                           const PnlDataPoint& b) {
-            return a.date < b.date;
-        });
+        std::sort(data_points.begin(), data_points.end(),
+                [](const PnlDataPoint& a,const PnlDataPoint& b) {
+                        return a.date < b.date;
+                 });
 
         JSONArray chart_data;
         for (const auto& data_point : data_points) {
@@ -170,6 +150,45 @@ namespace utils {
             point["profit"] = JSONValue(static_cast<double>(data_point.profit));
             point["loss"] = JSONValue(static_cast<double>(data_point.loss));
             point["profit/loss"] = JSONValue(static_cast<double>(data_point.total));
+
+            chart_data.emplace_back(point);
+        }
+
+        return chart_data;
+    }
+
+    JSONArray CreateTradesCountChartData(const std::vector<TradeRecord>& trades) {
+        std::map<std::string, TradesCountDataPoint> daily_data;
+
+        for (const auto& trade : trades) {
+            std::string day = FormatDateForChart(trade.close_time);
+
+            auto& data_point = daily_data[day];
+            data_point.date = day;
+
+            if (trade.profit > 0) {
+                data_point.profit += 1;
+            } else {
+                data_point.loss += 1;
+            }
+        }
+
+        std::vector<TradesCountDataPoint> data_points;
+        for (const auto& [date, data_point] : daily_data) {
+            data_points.push_back(data_point);
+        }
+
+        std::sort(data_points.begin(), data_points.end(),
+                  [](const TradesCountDataPoint& a, const TradesCountDataPoint& b) {
+                      return a.date < b.date;
+                  });
+
+        JSONArray chart_data;
+        for (const auto& data_point : data_points) {
+            JSONObject point;
+            point["day"] = JSONValue(data_point.date);
+            point["profit"] = JSONValue(static_cast<double>(data_point.profit));
+            point["loss"] = JSONValue(static_cast<double>(data_point.loss));
 
             chart_data.emplace_back(point);
         }

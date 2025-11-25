@@ -38,15 +38,11 @@ extern "C" void CreateReport(rapidjson::Value& request,
         to_two_weeks_ago = utils::CalculateTimestampForTwoWeeksAgo(to);
     }
 
-    std::cout << "from: : " << from << std::endl;
-    std::cout << "to : " << to << std::endl;
-    std::cout << "2w from : " << from_two_weeks_ago << std::endl;
-    std::cout << "2w to : " << to_two_weeks_ago << std::endl;
-
     std::vector<TradeRecord> close_trades_vector;
 
     try {
-        server->GetCloseTradesByGroup(group_mask, 1735689600, 1764075600, &close_trades_vector);
+        // 1735689600, 1764075600
+        server->GetCloseTradesByGroup(group_mask, from_two_weeks_ago, to_two_weeks_ago, &close_trades_vector);
     } catch (const std::exception& e) {
         std::cerr << "[DailyTradesReportInterface]: " << e.what() << std::endl;
     }
@@ -95,10 +91,41 @@ extern "C" void CreateReport(rapidjson::Value& request,
         {"height", 300.0}
     }));
 
+    // Clients trades count chart
+    const JSONArray trades_count_chart_data = utils::CreateTradesCountChartData(close_trades_vector);
+
+    Node trades_count_chart = ResponsiveContainer({
+        LineChart({
+            XAxis({}, props({{"dataKey", "day"}})),
+            YAxis(),
+            Tooltip(),
+            Legend(),
+
+            Line({}, props({
+                {"type", "monotone"},
+                {"dataKey", "profit"},
+                {"stroke", "#4A90E2"}
+            })),
+
+            Line({}, props({
+                {"type", "monotone"},
+                {"dataKey", "loss"},
+                {"stroke", "#7ED321"}
+            })),
+        }, props({
+            {"data", trades_count_chart_data}
+        }))
+    }, props({
+        {"width", "100%"},
+        {"height", 300.0}
+    }));
+
     const Node report = div({
         h1({ text("Daily Trades Report") }),
         h2({ text("Profit and Loss of Clients, USD") }),
-        pnl_chart
+        pnl_chart,
+        h2({ text("Client Trades Count") }),
+        trades_count_chart
     });
 
     utils::CreateUI(report, response, allocator);

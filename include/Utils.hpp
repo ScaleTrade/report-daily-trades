@@ -26,4 +26,6 @@ namespace utils {
     std::string FormatDateForChart(time_t time);
 
     JSONArray CreatePnlChartData(const std::vector<TradeRecord>& trades);
+
+    JSONArray CreateTradesCountChartData(const std::vector<TradeRecord>& trades);
 }
