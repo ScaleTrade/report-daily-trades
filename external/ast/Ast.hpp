@@ -146,37 +146,7 @@ namespace ast {
     TAG(line)
     TAG(g)
 
-    // ---------- Recharts tags v.1 ----------
-
-    // TAG(ResponsiveContainer)
-    // TAG(LineChart)
-    // TAG(BarChart)
-    // TAG(PieChart)
-    // TAG(AreaChart)
-    // TAG(XAxis)
-    // TAG(YAxis)
-    // TAG(ZAxis)
-    // TAG(Tooltip)
-    // TAG(Legend)
-    // TAG(Line)
-    // TAG(Bar)
-    // TAG(Pie)
-    // TAG(Area)
-    // TAG(Cell)
-    // TAG(CartesianGrid)
-    // TAG(Brush)
-    // TAG(ReferenceLine)
-    // TAG(ReferenceDot)
-    // TAG(ComposedChart)
-    // TAG(ScatterChart)
-    // TAG(Scatter)
-    // TAG(RadarChart)
-    // TAG(Radar)
-    // TAG(PolarGrid)
-    // TAG(PolarAngleAxis)
-    // TAG(PolarRadiusAxis)
-
-    // ---------- Recharts tags v.2 ----------
+    // ---------- Recharts tags ----------
     TAG_WITH_TYPE(ResponsiveContainer, "Recharts.ResponsiveContainer")
     TAG_WITH_TYPE(LineChart, "Recharts.LineChart")
     TAG_WITH_TYPE(BarChart, "Recharts.BarChart")

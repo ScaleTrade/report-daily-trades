@@ -2,8 +2,6 @@
 
 #include <iomanip>
 
-using namespace ast;
-
 extern "C" void AboutReport(rapidjson::Value& request,
                             rapidjson::Value& response,
                             rapidjson::Document::AllocatorType& allocator,
@@ -55,39 +53,7 @@ extern "C" void CreateReport(rapidjson::Value& request,
         return oss.str();
     };
 
-    // Test
-    struct DataPoint {
-        std::string date;
-        int line1;
-    };
-
-    std::vector<DataPoint> data_points = {
-    { "2025.11.12", 400},
-    { "2025.11.13", 300},
-    { "2025.11.14", 200},
-    { "2025.11.15", 278},
-    { "2025.11.16", 189},
-    { "2025.11.17", 239},
-    { "2025.11.18", 349},
-    { "2025.11.19", 410},
-    { "2025.11.20", 380},
-    { "2025.11.21", 295},
-    { "2025.11.22", 260},
-    { "2025.11.23", 310},
-    { "2025.11.24", 330},
-    { "2025.11.25", 360}
-    };
-
-    JSONArray chart_data;
-    for (const auto& data_point : data_points) {
-        JSONObject point;
-        point["day"]   = JSONValue(data_point.date);
-        point["line1"] = JSONValue(static_cast<double>(data_point.line1));
-        // point["line2"] = JSONValue(data_point.line2);
-        // point["line3"] = JSONValue(data_point.line3);
-
-        chart_data.emplace_back(point);
-    }
+    const JSONArray pnl_chart_data = utils::CreatePnlChartData(close_trades_vector);
 
     Node chart = ResponsiveContainer({
         LineChart({
@@ -98,23 +64,23 @@ extern "C" void CreateReport(rapidjson::Value& request,
 
             Line({}, props({
                 {"type", "monotone"},
-                {"dataKey", "line1"},
-                {"stroke", "#8884d8"}
+                {"dataKey", "profit"},
+                {"stroke", "#4A90E2"}
             })),
 
             Line({}, props({
                 {"type", "monotone"},
-                {"dataKey", "line2"},
-                {"stroke", "#82ca9d"}
+                {"dataKey", "loss"},
+                {"stroke", "#7ED321"}
             })),
 
             Line({}, props({
                 {"type", "monotone"},
-                {"dataKey", "line3"},
-                {"stroke", "#ff7300"}
+                {"dataKey", "profit/loss"},
+                {"stroke", "#F5A623"}
             }))
         }, props({
-            {"data", chart_data}
+            {"data", pnl_chart_data}
         }))
     }, props({
         {"width", "100%"},
