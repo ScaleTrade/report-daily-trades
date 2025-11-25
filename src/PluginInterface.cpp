@@ -40,8 +40,9 @@ extern "C" void CreateReport(rapidjson::Value& request,
     std::vector<TradeRecord> open_trades_vector;
 
     try {
+        // 1735689600, 1764075600
         server->GetCloseTradesByGroup(group_mask, from_two_weeks_ago, to, &close_trades_vector);
-        server->GetOpenTradesByGroup(group_mask, from_two_weeks_ago, to, &open_trades_vector);
+        server->GetOpenTradesByGroup(group_mask, 1735689600, 1764075600, &open_trades_vector);
     } catch (const std::exception& e) {
         std::cerr << "[DailyTradesReportInterface]: " << e.what() << std::endl;
     }
@@ -227,7 +228,7 @@ extern "C" void CreateReport(rapidjson::Value& request,
     };
 
     // Total current positions chart
-    const JSONArray current_positions_chart_data = utils::CreateOpenPositionsPieChartData(close_trades_vector);
+    const JSONArray current_positions_chart_data = utils::CreateOpenPositionsPieChartData(open_trades_vector);
 
     Node current_positions_pie_chart = ResponsiveContainer({
         PieChart({

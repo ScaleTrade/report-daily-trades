@@ -210,17 +210,21 @@ namespace utils {
 
         JSONArray chart_data;
 
+        auto round2 = [](double value) -> double {
+            return std::round(value * 100.0) / 100.0;
+        };
+
         if (total_profit > 0) {
             JSONObject profit_point;
             profit_point["name"]  = JSONValue("Profit");
-            profit_point["value"] = JSONValue((total_profit / total) * 100.0);
+            profit_point["value"] = JSONValue(round2((total_profit / total) * 100.0));
             chart_data.emplace_back(profit_point);
         }
 
         if (total_loss > 0) {
             JSONObject loss_point;
             loss_point["name"]  = JSONValue("Loss");
-            loss_point["value"] = JSONValue((total_loss / total) * 100.0);
+            loss_point["value"] = JSONValue(round2((total_loss / total) * 100.0));
             chart_data.emplace_back(loss_point);
         }
 
