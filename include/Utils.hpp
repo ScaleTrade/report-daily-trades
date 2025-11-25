@@ -9,5 +9,5 @@ namespace utils {
               rapidjson::Value& response,
               rapidjson::Document::AllocatorType& allocator);
 
-    int CalculateFromTwoWeeksAgo(const int timestamp);
+    int CalculateForTwoWeeksAgo(const int timestamp);
 }
