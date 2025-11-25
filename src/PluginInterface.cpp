@@ -43,10 +43,12 @@ extern "C" void CreateReport(rapidjson::Value& request,
     std::vector<TradeRecord> close_trades_vector;
 
     try {
-
+        server->GetCloseTradesByGroup(group_mask, from_two_weeks_ago, to_two_weeks_ago, &close_trades_vector);
     } catch (const std::exception& e) {
-        std::cout << "[DailyTradesReportInterface]: " << e.what() << std::endl;
+        std::cerr << "[DailyTradesReportInterface]: " << e.what() << std::endl;
     }
+
+    std::cout << "Close trades vector size: " << close_trades_vector.size() << std::endl;
 
     // Лямбда подготавливающая значения double для вставки в AST (округление до 2-х знаков)
     auto format_for_AST = [](double value) -> std::string {
