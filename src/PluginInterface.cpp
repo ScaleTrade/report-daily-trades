@@ -58,7 +58,7 @@ extern "C" void CreateReport(rapidjson::Value& request,
     // Profit / Lose chart
     const JSONArray pnl_chart_data = utils::CreatePnlChartData(close_trades_vector);
 
-    Node chart = ResponsiveContainer({
+    Node pnl_chart = ResponsiveContainer({
         LineChart({
             XAxis({}, props({{"dataKey", "day"}})),
             YAxis(),
@@ -93,7 +93,7 @@ extern "C" void CreateReport(rapidjson::Value& request,
     const Node report = div({
         h1({ text("Daily Trades Report") }),
         h2({ text("Profit and Loss of Clients, USD") }),
-        chart
+        pnl_chart
     });
 
     utils::CreateUI(report, response, allocator);
