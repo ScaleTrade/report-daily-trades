@@ -98,6 +98,7 @@ namespace utils {
 
     int CalculateTimestampForTwoWeeksAgo(const int timestamp) {
         constexpr int two_weeks_interval = 14 * 24 * 60 * 60;
+        std::cout << "INTERVAL: " << timestamp - two_weeks_interval << std::endl;
         return timestamp - two_weeks_interval;
     }
 
