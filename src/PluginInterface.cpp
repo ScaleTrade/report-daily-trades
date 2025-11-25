@@ -86,7 +86,7 @@ extern "C" void CreateReport(rapidjson::Value& request,
         // point["line2"] = JSONValue(data_point.line2);
         // point["line3"] = JSONValue(data_point.line3);
 
-        chart_data.push_back(point);
+        chart_data.emplace_back(point);
     }
 
     Node chart = ResponsiveContainer({
