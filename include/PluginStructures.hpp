@@ -14,3 +14,8 @@ struct TradesCountDataPoint {
     int profit;
     int loss;
 };
+
+struct OpenPositionsPieDataPoint {
+    std::string name;
+    double value = 0.0;
+};

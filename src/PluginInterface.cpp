@@ -37,10 +37,11 @@ extern "C" void CreateReport(rapidjson::Value& request,
     }
 
     std::vector<TradeRecord> close_trades_vector;
+    std::vector<TradeRecord> open_trades_vector;
 
     try {
-        // 1735689600, 1764075600
         server->GetCloseTradesByGroup(group_mask, from_two_weeks_ago, to, &close_trades_vector);
+        server->GetOpenTradesByGroup(group_mask, from_two_weeks_ago, to, &close_trades_vector);
     } catch (const std::exception& e) {
         std::cerr << "[DailyTradesReportInterface]: " << e.what() << std::endl;
     }
@@ -224,6 +225,29 @@ extern "C" void CreateReport(rapidjson::Value& request,
         }, props({{"className", "table"}}));
     };
 
+    // Total current positions chart
+    const JSONArray current_positions_chart_data = utils::CreateOpenPositionsPieChartData(open_trades_vector);
+
+    Node current_positions_pie_chart = ResponsiveContainer({
+        PieChart({
+            Tooltip(),
+            Legend(),
+            Pie({}, props({
+                {"dataKey", "value"},
+                {"nameKey", "name"},
+                {"data", current_positions_chart_data},
+                {"cx", "50%"},
+                {"cy", "50%"},
+                {"outerRadius", 100.0},
+                {"label", true}
+            }))
+        })
+    }, props({
+        {"width", "100%"},
+        {"height", 300.0}
+    }));
+
+    // Total report
     const Node report = div({
         h1({text("Daily Trades Report")}),
         h2({text("Profit and Loss of Clients, USD")}),
@@ -234,6 +258,8 @@ extern "C" void CreateReport(rapidjson::Value& request,
         create_top_profit_orders_table(top_profit_orders_vector),
         h2({text("Top Loss Orders")}),
         create_top_loss_orders_table(top_loss_orders_vector),
+        h2({text("Total Profit/Loss of Current Client Positions, USD")}),
+        current_positions_pie_chart
     });
 
     utils::CreateUI(report, response, allocator);
