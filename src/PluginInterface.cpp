@@ -53,6 +53,7 @@ extern "C" void CreateReport(rapidjson::Value& request,
         return oss.str();
     };
 
+    // Profit / Lose chart
     const JSONArray pnl_chart_data = utils::CreatePnlChartData(close_trades_vector);
 
     Node chart = ResponsiveContainer({

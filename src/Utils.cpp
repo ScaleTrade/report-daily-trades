@@ -114,6 +114,8 @@ namespace utils {
             }
 
     JSONArray CreatePnlChartData(const std::vector<TradeRecord>& trades) {
+        std::cout << "Trades length: " << trades.size() << std::endl;
+
         // Mock data
         std::vector<PnlDataPoint> data_points_mock = {
             { "2025.11.12", 500, -100, 400 },
@@ -154,13 +156,15 @@ namespace utils {
             data_points.push_back(data_point);
         }
 
+        std::cout << "Data points length: " << data_points.size() << std::endl;
+
         std::sort(data_points.begin(), data_points.end(), [](const PnlDataPoint& a,
                                                                            const PnlDataPoint& b) {
             return a.date < b.date;
         });
 
         JSONArray chart_data;
-        for (const auto& data_point : data_points) {
+        for (const auto& data_point : data_points_mock) {
             JSONObject point;
             point["day"]   = JSONValue(data_point.date);
             point["profit"] = JSONValue(static_cast<double>(data_point.profit));
