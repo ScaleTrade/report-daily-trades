@@ -160,7 +160,7 @@ namespace utils {
         });
 
         JSONArray chart_data;
-        for (const auto& data_point : data_points_mock) {
+        for (const auto& data_point : data_points) {
             JSONObject point;
             point["day"]   = JSONValue(data_point.date);
             point["profit"] = JSONValue(static_cast<double>(data_point.profit));
