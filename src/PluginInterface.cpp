@@ -172,7 +172,7 @@ extern "C" void CreateReport(rapidjson::Value& request,
         h2({text("Client Trades Count")}),
         trades_count_chart,
         h2({text("Top Loss Orders")}),
-        create_top_loss_orders_table(close_trades_vector),
+        create_top_loss_orders_table(top_loss_orders_vector),
     });
 
     utils::CreateUI(report, response, allocator);
