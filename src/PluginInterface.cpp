@@ -121,7 +121,7 @@ extern "C" void CreateReport(rapidjson::Value& request,
     }));
 
     // Top profit orders table
-    std::vector<TradeRecord> top_profit_orders_vector = utils::CreateTopLossOrdersVector(close_trades_vector);
+    std::vector<TradeRecord> top_profit_orders_vector = utils::CreateTopProfitOrdersVector(close_trades_vector);
 
     auto create_top_loss_orders_table = [&](const std::vector<TradeRecord>& trades) -> Node {
         std::vector<Node> thead_rows;
@@ -233,7 +233,7 @@ extern "C" void CreateReport(rapidjson::Value& request,
         h2({text("Client Trades Count")}),
         trades_count_chart,
         h2({text("Top Profit Orders")}),
-        create_top_profit_orders_table(top_loss_orders_vector),
+        create_top_profit_orders_table(top_profit_orders_vector),
         h2({text("Top Loss Orders")}),
         create_top_loss_orders_table(top_loss_orders_vector),
     });
