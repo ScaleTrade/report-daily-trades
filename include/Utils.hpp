@@ -26,12 +26,13 @@ namespace utils {
 
     std::string FormatDateForChart(time_t time);
 
-    JSONArray CreatePnlChartData(const std::vector<TradeRecord>& trades);
+    JSONArray CreatePnlChartData(const std::vector<UsdConvertedTrade>& trades);
 
     JSONArray CreateTradesCountChartData(const std::vector<TradeRecord>& trades);
 
     JSONArray CreateOpenPositionsPieChartData(const std::vector<TradeRecord>& trades);
 
     std::vector<TradeRecord> CreateTopProfitOrdersVector(const std::vector<TradeRecord>& trades);
+
     std::vector<TradeRecord> CreateTopLossOrdersVector(const std::vector<TradeRecord>& trades);
 }

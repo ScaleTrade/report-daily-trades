@@ -113,7 +113,7 @@ namespace utils {
                 return oss.str();
             }
 
-    JSONArray CreatePnlChartData(const std::vector<TradeRecord>& trades) {
+    JSONArray CreatePnlChartData(const std::vector<UsdConvertedTrade>& trades) {
         std::map<std::string, PnlDataPoint> daily_data;
 
         for (const auto& trade : trades) {
@@ -122,13 +122,13 @@ namespace utils {
             auto& data_point = daily_data[day];
             data_point.date = day;
 
-            if (trade.profit > 0) {
-                data_point.profit += trade.profit;
+            if (trade.usd_profit > 0) {
+                data_point.profit += trade.usd_profit;
             } else {
-                data_point.loss += trade.profit;
+                data_point.loss += trade.usd_profit;
             }
 
-            data_point.total += trade.profit;
+            data_point.total += trade.usd_profit;
         }
 
         std::vector<PnlDataPoint> data_points;

@@ -38,17 +38,42 @@ extern "C" void CreateReport(rapidjson::Value& request,
 
     std::vector<TradeRecord> close_trades_vector;
     std::vector<TradeRecord> open_trades_vector;
+    std::vector<GroupRecord> groups_vector;
+    std::vector<UsdConvertedTrade> usd_converted_close_trades_vector;
+
 
     try {
         // 1735689600, 1764115200
         server->GetCloseTradesByGroup(group_mask, from_two_weeks_ago, to, &close_trades_vector);
         server->GetOpenTradesByGroup(group_mask, 1735689600, 1764115200, &open_trades_vector);
+        server->GetAllGroups(&groups_vector);
+
+        for (auto close_trade : close_trades_vector) {
+            AccountRecord account;
+            double multiplier;
+
+            server->GetAccountByLogin(close_trade.login, &account);
+
+            for (const auto& group : groups_vector) {
+                if (group.group == account.group) {
+                    UsdConvertedTrade converted_close_trade;
+
+                    server->CalculateConvertRateByCurrency(group.currency, "USD", close_trade.cmd, &multiplier);
+
+                    converted_close_trade.close_time = close_trade.close_time;
+                    converted_close_trade.usd_profit = close_trade.profit * multiplier;
+                }
+            }
+        }
+
+
     } catch (const std::exception& e) {
         std::cerr << "[DailyTradesReportInterface]: " << e.what() << std::endl;
     }
 
     std::cout << "Close trades vector size: : " << close_trades_vector.size() << std::endl;
     std::cout << "Open trades vector size: : " << open_trades_vector.size() << std::endl;
+    std::cout << "Groups vector size: : " << groups_vector.size() << std::endl;
 
     // Лямбда подготавливающая значения double для вставки в AST (округление до 2-х знаков)
     auto format_for_AST = [](double value) -> std::string {
@@ -58,7 +83,7 @@ extern "C" void CreateReport(rapidjson::Value& request,
     };
 
     // Profit / Lose chart
-    const JSONArray pnl_chart_data = utils::CreatePnlChartData(close_trades_vector);
+    const JSONArray pnl_chart_data = utils::CreatePnlChartData(usd_converted_close_trades_vector);
 
     Node pnl_chart = ResponsiveContainer({
         LineChart({

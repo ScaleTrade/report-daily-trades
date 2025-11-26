@@ -1,6 +1,12 @@
 #pragma once
 
 #include <string>
+#include <ctime>
+
+struct UsdConvertedTrade {
+    time_t close_time;
+    double usd_profit;
+};
 
 struct PnlDataPoint {
     std::string date;
