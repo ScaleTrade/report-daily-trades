@@ -194,15 +194,15 @@ namespace utils {
         return chart_data;
     }
 
-    JSONArray CreateOpenPositionsPieChartData(const std::vector<TradeRecord>& trades) {
+    JSONArray CreateOpenPositionsPieChartData(const std::vector<UsdConvertedTrade>& trades) {
         double total_profit = 0.0;
         double total_loss = 0.0;
 
         for (const auto& trade : trades) {
-            if (trade.profit >= 0)
-                total_profit += trade.profit;
+            if (trade.usd_profit >= 0)
+                total_profit += trade.usd_profit;
             else
-                total_loss += -trade.profit; // убыток как положительное число
+                total_loss += -trade.usd_profit; // убыток как положительное число
         }
 
         double total = total_profit + total_loss;

@@ -40,6 +40,7 @@ extern "C" void CreateReport(rapidjson::Value& request,
     std::vector<TradeRecord> open_trades_vector;
     std::vector<GroupRecord> groups_vector;
     std::vector<UsdConvertedTrade> usd_converted_close_trades_vector;
+    std::vector<UsdConvertedTrade> usd_converted_open_trades_vector;
 
 
     try {
@@ -68,7 +69,25 @@ extern "C" void CreateReport(rapidjson::Value& request,
             }
         }
 
+        for (auto open_trade : open_trades_vector) {
+            AccountRecord account;
+            double multiplier;
 
+            server->GetAccountByLogin(open_trade.login, &account);
+
+            for (const auto& group : groups_vector) {
+                if (group.group == account.group) {
+                    UsdConvertedTrade converted_close_trade;
+
+                    server->CalculateConvertRateByCurrency(group.currency, "USD", open_trade.cmd, &multiplier);
+
+                    converted_close_trade.close_time = open_trade.close_time;
+                    converted_close_trade.usd_profit = open_trade.profit * multiplier;
+
+                    usd_converted_close_trades_vector.push_back(converted_close_trade);
+                }
+            }
+        }
     } catch (const std::exception& e) {
         std::cerr << "[DailyTradesReportInterface]: " << e.what() << std::endl;
     }
@@ -77,6 +96,7 @@ extern "C" void CreateReport(rapidjson::Value& request,
     std::cout << "Open trades vector size: : " << open_trades_vector.size() << std::endl;
     std::cout << "Groups vector size: : " << groups_vector.size() << std::endl;
     std::cout << "Converted close trades vector size: " << usd_converted_close_trades_vector.size() << std::endl;
+    std::cout << "Converted open trades vector size: " << usd_converted_open_trades_vector.size() << std::endl;
 
     // Лямбда подготавливающая значения double для вставки в AST (округление до 2-х знаков)
     auto format_double_for_AST = [](double value) -> std::string {
@@ -256,7 +276,7 @@ extern "C" void CreateReport(rapidjson::Value& request,
     };
 
     // Total current positions chart
-    const JSONArray current_positions_chart_data = utils::CreateOpenPositionsPieChartData(open_trades_vector);
+    const JSONArray current_positions_chart_data = utils::CreateOpenPositionsPieChartData(usd_converted_open_trades_vector);
 
     Node current_positions_pie_chart = ResponsiveContainer({
         PieChart({
