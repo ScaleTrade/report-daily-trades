@@ -194,45 +194,6 @@ namespace utils {
         return chart_data;
     }
 
-    // v.1
-    // JSONArray CreateOpenPositionsPieChartData(const std::vector<UsdConvertedTrade>& trades) {
-    //     double total_profit = 0.0;
-    //     double total_loss = 0.0;
-    //
-    //     for (const auto& trade : trades) {
-    //         if (trade.usd_profit >= 0)
-    //             total_profit += trade.usd_profit;
-    //         else
-    //             total_loss += -trade.usd_profit; // убыток как положительное число
-    //     }
-    //
-    //     double total = total_profit + total_loss;
-    //     if (total == 0.0) return JSONArray{}; // нет открытых позиций с P/L
-    //
-    //     JSONArray chart_data;
-    //
-    //     auto round2 = [](double value) -> double {
-    //         return std::round(value * 100.0) / 100.0;
-    //     };
-    //
-    //     if (total_profit > 0) {
-    //         JSONObject profit_point;
-    //         profit_point["name"]  = JSONValue("Profit");
-    //         profit_point["value"] = JSONValue(round2((total_profit / total) * 100.0));
-    //         chart_data.emplace_back(profit_point);
-    //     }
-    //
-    //     if (total_loss > 0) {
-    //         JSONObject loss_point;
-    //         loss_point["name"]  = JSONValue("Loss");
-    //         loss_point["value"] = JSONValue(round2((total_loss / total) * 100.0));
-    //         chart_data.emplace_back(loss_point);
-    //     }
-    //
-    //     return chart_data;
-    // }
-
-    // v.2
     JSONArray CreateOpenPositionsPieChartData(const std::vector<UsdConvertedTrade>& trades) {
         double total_profit = 0.0;
         double total_loss = 0.0;
@@ -253,28 +214,22 @@ namespace utils {
             return std::round(value * 100.0) / 100.0;
         };
 
-        auto format_for_chart = [round2](double value) -> std::string {
-            return std::to_string(round2(value)) + "%";
-        };
-
         if (total_profit > 0) {
             JSONObject profit_point;
             profit_point["name"]  = JSONValue("Profit");
-            profit_point["value"] = JSONValue(format_for_chart((total_profit / total) * 100.0));
+            profit_point["value"] = JSONValue(round2((total_profit / total) * 100.0));
             chart_data.emplace_back(profit_point);
         }
 
         if (total_loss > 0) {
             JSONObject loss_point;
             loss_point["name"]  = JSONValue("Loss");
-            loss_point["value"] = JSONValue(format_for_chart((total_loss / total) * 100.0));
+            loss_point["value"] = JSONValue(round2((total_loss / total) * 100.0));
             chart_data.emplace_back(loss_point);
         }
 
         return chart_data;
     }
-
-
 
     std::vector<TradeRecord> CreateTopProfitOrdersVector(const std::vector<TradeRecord>& trades) {
         std::vector sorted_trades = trades;
