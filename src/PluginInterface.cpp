@@ -277,7 +277,7 @@ extern "C" void CreateReport(rapidjson::Value& request,
             Legend(),
             Pie({
                 Cell({}, props({ {"fill", "#4A90E2"} })),
-                Cell({}, props({ {"fill", "#7ED321"} }))
+                Cell({}, props({ {"fill", "#7ED321"} })),
             }, props({
                 {"dataKey", "value"},
                 {"nameKey", "name"},
@@ -285,7 +285,8 @@ extern "C" void CreateReport(rapidjson::Value& request,
                 {"cx", "50%"},
                 {"cy", "50%"},
                 {"outerRadius", 100.0},
-                {"label", "({value}) => value + '%'"}
+                {"label", true},
+                {"formatter", "percent"}
             }))
         })
     }, props({
