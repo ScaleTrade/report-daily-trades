@@ -278,7 +278,10 @@ extern "C" void CreateReport(rapidjson::Value& request,
         PieChart({
             Tooltip(),
             Legend(),
-            Pie({}, props({
+            Pie({
+                Cell({}, props({ {"fill", "#4A90E2"} })),   // profit
+                Cell({}, props({ {"fill", "#7ED321"} })),   // lose
+            }, props({
                 {"dataKey", "value"},
                 {"nameKey", "name"},
                 {"data", current_positions_chart_data},
