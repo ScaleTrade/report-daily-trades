@@ -45,7 +45,7 @@ extern "C" void CreateReport(rapidjson::Value& request,
     try {
         // 1735689600, 1764115200
         server->GetCloseTradesByGroup(group_mask, from_two_weeks_ago, to, &close_trades_vector);
-        server->GetOpenTradesByGroup(group_mask, from_two_weeks_ago, to, &open_trades_vector);
+        server->GetOpenTradesByGroup(group_mask, 1735689600, 1764115200, &open_trades_vector);
         server->GetAllGroups(&groups_vector);
 
         for (auto close_trade : close_trades_vector) {
@@ -63,7 +63,7 @@ extern "C" void CreateReport(rapidjson::Value& request,
                     converted_close_trade.close_time = close_trade.close_time;
                     converted_close_trade.usd_profit = close_trade.profit * multiplier;
 
-                    usd_converted_close_trades_vector.push_back(converted_close_trade);
+                    usd_converted_close_trades_vector.emplace_back(converted_close_trade);
                 }
             }
         }
@@ -76,14 +76,14 @@ extern "C" void CreateReport(rapidjson::Value& request,
 
             for (const auto& group : groups_vector) {
                 if (group.group == account.group) {
-                    UsdConvertedTrade converted_close_trade;
+                    UsdConvertedTrade converted_open_trade;
 
                     server->CalculateConvertRateByCurrency(group.currency, "USD", open_trade.cmd, &multiplier);
 
-                    converted_close_trade.close_time = open_trade.close_time;
-                    converted_close_trade.usd_profit = open_trade.profit * multiplier;
+                    converted_open_trade.close_time = open_trade.close_time;
+                    converted_open_trade.usd_profit = open_trade.profit * multiplier;
 
-                    usd_converted_close_trades_vector.push_back(converted_close_trade);
+                    usd_converted_open_trades_vector.emplace_back(converted_open_trade);
                 }
             }
         }
