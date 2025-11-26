@@ -45,7 +45,7 @@ extern "C" void CreateReport(rapidjson::Value& request,
     try {
         // 1735689600, 1764115200
         server->GetCloseTradesByGroup(group_mask, from_two_weeks_ago, to, &close_trades_vector);
-        server->GetOpenTradesByGroup(group_mask, 1735689600, 1764115200, &open_trades_vector);
+        server->GetOpenTradesByGroup(group_mask, from_two_weeks_ago, to, &open_trades_vector);
         server->GetAllGroups(&groups_vector);
 
         for (auto close_trade : close_trades_vector) {
