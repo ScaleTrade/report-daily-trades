@@ -60,6 +60,8 @@ extern "C" void CreateReport(rapidjson::Value& request,
 
                     server->CalculateConvertRateByCurrency(group.currency, "USD", close_trade.cmd, &multiplier);
 
+                    std::cout << "MULTIPLIER: " << group.currency << " to USD: " << multiplier << std::endl;
+
                     converted_close_trade.close_time = close_trade.close_time;
                     converted_close_trade.usd_profit = close_trade.profit * multiplier;
                 }
