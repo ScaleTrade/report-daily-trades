@@ -79,7 +79,7 @@ extern "C" void CreateReport(rapidjson::Value& request,
     std::cout << "Converted close trades vector size: " << usd_converted_close_trades_vector.size() << std::endl;
 
     // Лямбда подготавливающая значения double для вставки в AST (округление до 2-х знаков)
-    auto format_for_AST = [](double value) -> std::string {
+    auto format_double_for_AST = [](double value) -> std::string {
         std::ostringstream oss;
         oss << std::fixed << std::setprecision(2) << value;
         return oss.str();
@@ -189,9 +189,9 @@ extern "C" void CreateReport(rapidjson::Value& request,
                 td({div({text(account.group)})}),
                 td({div({text(trade.cmd == 0 ? "buy" : "sell")})}),
                 td({div({text(std::to_string(trade.volume))})}),
-                td({div({text(std::to_string(trade.close_price))})}),
+                td({div({text(format_double_for_AST(trade.close_price))})}),
                 td({div({text("Swap")})}),
-                td({div({text(std::to_string(trade.profit))})}),
+                td({div({text(format_double_for_AST(trade.profit))})}),
             }));
         }
 
@@ -242,9 +242,9 @@ extern "C" void CreateReport(rapidjson::Value& request,
                 td({div({text(account.group)})}),
                 td({div({text(trade.cmd == 0 ? "buy" : "sell")})}),
                 td({div({text(std::to_string(trade.volume))})}),
-                td({div({text(std::to_string(trade.close_price))})}),
+                td({div({text(format_double_for_AST(trade.close_price))})}),
                 td({div({text("Swap")})}),
-                td({div({text(std::to_string(trade.profit))})}),
+                td({div({text(format_double_for_AST(trade.profit))})}),
             }));
         }
 
@@ -321,13 +321,13 @@ extern "C" void CreateReport(rapidjson::Value& request,
                 td({div({text(account.group)})}),
                 td({div({text(trade.cmd == 0 ? "buy" : "sell")})}),
                 td({div({text(std::to_string(trade.volume))})}),
-                td({div({text(std::to_string(trade.open_price))})}),
+                td({div({text(format_double_for_AST(trade.open_price))})}),
                 td({div({text(std::to_string(trade.sl))})}),
                 td({div({text(std::to_string(trade.tp))})}),
                 td({div({text("Market price")})}),
                 td({div({text("Swap")})}),
                 td({div({text("Points")})}),
-                td({div({text(std::to_string(trade.profit))})}),
+                td({div({text(format_double_for_AST(trade.profit))})}),
             }));
         }
 
@@ -382,13 +382,13 @@ extern "C" void CreateReport(rapidjson::Value& request,
                 td({div({text(account.group)})}),
                 td({div({text(trade.cmd == 0 ? "buy" : "sell")})}),
                 td({div({text(std::to_string(trade.volume))})}),
-                td({div({text(std::to_string(trade.open_price))})}),
+                td({div({text(format_double_for_AST(trade.open_price))})}),
                 td({div({text(std::to_string(trade.sl))})}),
                 td({div({text(std::to_string(trade.tp))})}),
                 td({div({text("Market price")})}),
                 td({div({text("Swap")})}),
                 td({div({text("Points")})}),
-                td({div({text(std::to_string(trade.profit))})}),
+                td({div({text(format_double_for_AST(trade.profit))})}),
             }));
         }
 
