@@ -276,8 +276,8 @@ extern "C" void CreateReport(rapidjson::Value& request,
             Tooltip(),
             Legend(),
             Pie({
-                Cell({}, props({ {"fill", "#4A90E2"} })),
-                Cell({}, props({ {"fill", "#7ED321"} })),
+                // Cell({}, props({ {"fill", "#4A90E2"} })),
+                // Cell({}, props({ {"fill", "#7ED321"} })),
             }, props({
                 {"dataKey", "value"},
                 {"nameKey", "name"},
