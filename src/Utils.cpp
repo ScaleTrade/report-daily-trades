@@ -260,4 +260,5 @@ namespace utils {
 
         return sorted_trades;
     };
+
 }
