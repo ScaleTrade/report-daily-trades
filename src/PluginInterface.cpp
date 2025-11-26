@@ -91,6 +91,9 @@ extern "C" void CreateReport(rapidjson::Value& request,
         std::cerr << "[DailyTradesReportInterface]: " << e.what() << std::endl;
     }
 
+    std::cout << "Open trades vector size: : " << open_trades_vector.size() << std::endl;
+    std::cout << "USD Converted open trades vector size: : " << usd_converted_open_trades_vector.size() << std::endl;
+
     // Лямбда подготавливающая значения double для вставки в AST (округление до 2-х знаков)
     auto format_double_for_AST = [](double value) -> std::string {
         std::ostringstream oss;
@@ -270,8 +273,6 @@ extern "C" void CreateReport(rapidjson::Value& request,
 
     // Total current positions chart
     const JSONArray current_positions_chart_data = utils::CreateOpenPositionsPieChartData(usd_converted_open_trades_vector);
-
-    std::cout << "current_positions_chart_data size: " << current_positions_chart_data.size() << std::endl;
 
     Node current_positions_pie_chart = ResponsiveContainer({
         PieChart({
