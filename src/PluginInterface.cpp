@@ -74,6 +74,7 @@ extern "C" void CreateReport(rapidjson::Value& request,
     std::cout << "Close trades vector size: : " << close_trades_vector.size() << std::endl;
     std::cout << "Open trades vector size: : " << open_trades_vector.size() << std::endl;
     std::cout << "Groups vector size: : " << groups_vector.size() << std::endl;
+    std::cout << "Converted close trades vector size: " << usd_converted_close_trades_vector.size() << std::endl;
 
     // Лямбда подготавливающая значения double для вставки в AST (округление до 2-х знаков)
     auto format_for_AST = [](double value) -> std::string {
