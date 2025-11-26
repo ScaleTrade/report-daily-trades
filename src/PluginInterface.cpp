@@ -271,14 +271,13 @@ extern "C" void CreateReport(rapidjson::Value& request,
     // Total current positions chart
     const JSONArray current_positions_chart_data = utils::CreateOpenPositionsPieChartData(usd_converted_open_trades_vector);
 
+    std::cout << "current_positions_chart_data size: " << current_positions_chart_data.size() << std::endl;
+
     Node current_positions_pie_chart = ResponsiveContainer({
         PieChart({
             Tooltip(),
             Legend(),
-            Pie({
-                // Cell({}, props({ {"fill", "#4A90E2"} })),
-                // Cell({}, props({ {"fill", "#7ED321"} })),
-            }, props({
+            Pie({}, props({
                 {"dataKey", "value"},
                 {"nameKey", "name"},
                 {"data", current_positions_chart_data},
