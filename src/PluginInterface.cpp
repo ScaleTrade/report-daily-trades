@@ -42,7 +42,6 @@ extern "C" void CreateReport(rapidjson::Value& request,
     std::vector<UsdConvertedTrade> usd_converted_close_trades_vector;
     std::vector<UsdConvertedTrade> usd_converted_open_trades_vector;
 
-
     try {
         // 1735689600, 1764115200
         server->GetCloseTradesByGroup(group_mask, from_two_weeks_ago, to, &close_trades_vector);
@@ -187,7 +186,7 @@ extern "C" void CreateReport(rapidjson::Value& request,
             th({div({text("Type")})}),
             th({div({text("Volume")})}),
             th({div({text("Close Price")})}),
-            th({div({text("Swap")})}),
+            th({div({text("Storage")})}),
             th({div({text("Profit")})})
         }));
 
@@ -210,7 +209,7 @@ extern "C" void CreateReport(rapidjson::Value& request,
                 td({div({text(trade.cmd == 0 ? "buy" : "sell")})}),
                 td({div({text(std::to_string(trade.volume))})}),
                 td({div({text(format_double_for_AST(trade.close_price))})}),
-                td({div({text("Swap")})}),
+                td({div({text(format_double_for_AST(trade.storage))})}),
                 td({div({text(format_double_for_AST(trade.profit))})}),
             }));
         }
@@ -263,7 +262,7 @@ extern "C" void CreateReport(rapidjson::Value& request,
                 td({div({text(trade.cmd == 0 ? "buy" : "sell")})}),
                 td({div({text(std::to_string(trade.volume))})}),
                 td({div({text(format_double_for_AST(trade.close_price))})}),
-                td({div({text("Swap")})}),
+                td({div({text(format_double_for_AST(trade.storage))})}),
                 td({div({text(format_double_for_AST(trade.profit))})}),
             }));
         }
@@ -282,7 +281,10 @@ extern "C" void CreateReport(rapidjson::Value& request,
         PieChart({
             Tooltip(),
             Legend(),
-            Pie({}, props({
+            Pie({
+                Cell({}, props({ {"fill", "#4A90E2"} })),
+                Cell({}, props({ {"fill", "#7ED321"} }))
+            }, props({
                 {"dataKey", "value"},
                 {"nameKey", "name"},
                 {"data", current_positions_chart_data},
@@ -318,8 +320,8 @@ extern "C" void CreateReport(rapidjson::Value& request,
             th({div({text("S / L")})}),
             th({div({text("T / P")})}),
             th({div({text("Market Price")})}),
-            th({div({text("Swap")})}),
-            th({div({text("Points")})}),
+            th({div({text("Storage")})}),
+            th({div({text("Commission")})}),
             th({div({text("Profit")})})
         }));
 
@@ -345,8 +347,8 @@ extern "C" void CreateReport(rapidjson::Value& request,
                 td({div({text(std::to_string(trade.sl))})}),
                 td({div({text(std::to_string(trade.tp))})}),
                 td({div({text("Market price")})}),
-                td({div({text("Swap")})}),
-                td({div({text("Points")})}),
+                td({div({text(format_double_for_AST(trade.storage))})}),
+                td({div({text(format_double_for_AST(trade.commission))})}),
                 td({div({text(format_double_for_AST(trade.profit))})}),
             }));
         }
@@ -379,8 +381,8 @@ extern "C" void CreateReport(rapidjson::Value& request,
             th({div({text("S / L")})}),
             th({div({text("T / P")})}),
             th({div({text("Market Price")})}),
-            th({div({text("Swap")})}),
-            th({div({text("Points")})}),
+            th({div({text("Storage")})}),
+            th({div({text("Commission")})}),
             th({div({text("Profit")})})
         }));
 
@@ -406,8 +408,8 @@ extern "C" void CreateReport(rapidjson::Value& request,
                 td({div({text(std::to_string(trade.sl))})}),
                 td({div({text(std::to_string(trade.tp))})}),
                 td({div({text("Market price")})}),
-                td({div({text("Swap")})}),
-                td({div({text("Points")})}),
+                td({div({text(format_double_for_AST(trade.storage))})}),
+                td({div({text(format_double_for_AST(trade.commission))})}),
                 td({div({text(format_double_for_AST(trade.profit))})}),
             }));
         }
