@@ -291,7 +291,7 @@ extern "C" void CreateReport(rapidjson::Value& request,
                 {"cx", "50%"},
                 {"cy", "50%"},
                 {"outerRadius", 100.0},
-                {"label", true}
+                {"label", "({value}) => value + '%'"}
             }))
         })
     }, props({
