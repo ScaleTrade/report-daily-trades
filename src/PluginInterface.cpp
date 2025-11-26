@@ -64,6 +64,8 @@ extern "C" void CreateReport(rapidjson::Value& request,
 
                     converted_close_trade.close_time = close_trade.close_time;
                     converted_close_trade.usd_profit = close_trade.profit * multiplier;
+
+                    usd_converted_close_trades_vector.push_back(converted_close_trade);
                 }
             }
         }
