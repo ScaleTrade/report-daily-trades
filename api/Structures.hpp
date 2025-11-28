@@ -884,9 +884,17 @@ struct CandleRecord {
     double volume = 0;
 };
 
+struct ServerLog {
+    std::string time;
+    std::string type;
+    std::string ip;
+    std::string message;
+};
+
 struct CServerInterface {
     virtual int TickSet(TickInfo& tick); //set quotes tick
     virtual int LogsOut(const std::string& type, const std::string& message);  //send logs to console
+    virtual int GetLogs(time_t from, time_t to, const std::string &type, const std::string &filter, std::vector<ServerLog>* logs);  //get logs
     static int GetApiVersion() { return PLUGIN_SERVER_API; }
 
     //+------------------------------------------------------------------+
@@ -911,9 +919,9 @@ struct CServerInterface {
     virtual int GetOpenTradesByLogin(int login, std::vector<TradeRecord>* trades);
     virtual int GetOpenTradesByMagic(int magic, std::vector<TradeRecord>* trades);
     virtual int GetOpenTradeByOrder(int order, TradeRecord* trade);
-    virtual int GetOpenTradesByGroup(const std::string& group_name, time_t from, time_t to, std::vector<TradeRecord>* trades);
+    virtual int GetOpenTradesByGroup(const std::string& FilterGroup, time_t from, time_t to, std::vector<TradeRecord>* trades);
     virtual int GetCloseTradesByLogin(int login, std::vector<TradeRecord>* trades);
-    virtual int GetCloseTradesByGroup(const std::string& group_name, time_t from, time_t to, std::vector<TradeRecord>* trades);
+    virtual int GetCloseTradesByGroup(const std::string& FilterGroup, time_t from, time_t to, std::vector<TradeRecord>* trades);
     virtual int GetAllOpenTrades(std::vector<TradeRecord>* trades);
 
     //+------------------------------------------------------------------+
@@ -923,7 +931,7 @@ struct CServerInterface {
     virtual int BalanceOut(int login, double amount, const std::string& comment);
     virtual int CreditIn(int login, double amount, const std::string& comment);
     virtual int CreditOut(int login, double amount, const std::string& comment);
-    virtual int GetTransactionsByGroup(const std::string& group_name, time_t from, time_t to, std::vector<TradeRecord>* trades);
+    virtual int GetTransactionsByGroup(const std::string& FilterGroup, time_t from, time_t to, std::vector<TradeRecord>* trades);
 
     //+------------------------------------------------------------------+
     // Symbols
