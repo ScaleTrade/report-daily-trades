@@ -655,6 +655,24 @@ enum {
 
 enum { OTP_MODE_DISABLED = 0, OTP_MODE_TOTP_SHA256 = 1 };
 
+struct EquityRecord {
+    int login;
+    time_t create_time;
+    std::string group;
+    int leverage;
+    double balance = 0.0;
+    double prevbalance = 0.0;
+    double credit = 0.0;
+    double equity = 0.0;
+    double profit = 0.0;
+    double storage = 0.0;
+    double commission = 0.0;
+    double margin = 0.0;
+    double margin_free = 0.0;
+    double margin_level = 0.0;
+    std::string currency;
+};
+
 struct MarginLevel {
     int login;
     std::string group;
@@ -892,7 +910,7 @@ struct ServerLog {
 };
 
 struct CServerInterface {
-        virtual int TickSet(TickInfo& tick); //set quotes tick
+    virtual int TickSet(TickInfo& tick); //set quotes tick
     virtual int LogsOut(const std::string& type, const std::string& message);  //send logs to console
     virtual int GetLogs(time_t from, time_t to, const std::string &type, const std::string &filter, std::vector<ServerLog>* logs);  //get logs
     static int GetApiVersion() { return PLUGIN_SERVER_API; }
@@ -907,6 +925,7 @@ struct CServerInterface {
     virtual int UpdateAccount(const AccountRecord& account);                                        //Upd acccount
     virtual int DeleteAccount(int login);                                                           //Del acccount by login
     virtual int GetMarginLevelByGroup(const std::string& group, std::vector<MarginLevel>* margins); //Get marginLevels by group
+    virtual int GetAccountsEquitiesByGroup(time_t from, time_t to, const std::string& group_filter, std::vector<EquityRecord>* equities); //Get equities by group
 
     //+------------------------------------------------------------------+
     // Trades
