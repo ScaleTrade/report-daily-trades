@@ -177,6 +177,7 @@ namespace ast {
 
     // ---------- Custom components ----------
     TAG(Table)
+    TAG(Column)
 
     // ---------- Props helper ----------
 

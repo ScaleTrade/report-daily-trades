@@ -375,7 +375,7 @@ extern "C" void CreateReport(rapidjson::Value& request,
     const Node top_open_loss_orders_table_node = Table({}, top_open_loss_orders_table_props);
 
     // Total report
-    const Node report = div({
+    const Node report = Column({
         h1({text("Daily Trades Report")}),
         h2({text("Profit and Loss of Clients, USD")}),
         pnl_chart_node,
