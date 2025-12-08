@@ -165,101 +165,101 @@ extern "C" void CreateReport(rapidjson::Value& request,
     std::vector<TradeRecord> top_close_profit_orders_vector = utils::CreateTopProfitOrdersVector(close_trades_vector);
 
     // v.1
-    auto create_top_close_profit_orders_table = [&](const std::vector<TradeRecord>& trades) -> Node {
-        std::vector<Node> thead_rows;
-        std::vector<Node> tbody_rows;
-        std::vector<Node> tfoot_rows;
-
-        // Thead
-        thead_rows.push_back(tr({
-            th({div({text("Order")})}),
-            th({div({text("Login")})}),
-            th({div({text("Name")})}),
-            th({div({text("Symbol")})}),
-            th({div({text("Group")})}),
-            th({div({text("Type")})}),
-            th({div({text("Volume")})}),
-            th({div({text("Close Price")})}),
-            th({div({text("Storage")})}),
-            th({div({text("Profit")})})
-        }));
-
-        // Tbody
-        for (const auto& trade : trades) {
-            AccountRecord account;
-
-            try {
-                server->GetAccountByLogin(trade.login, &account);
-            } catch (const std::exception& e) {
-                std::cerr << "[DailyTradesReportInterface]: " << e.what() << std::endl;
-            }
-
-            tbody_rows.push_back(tr({
-                td({div({text(std::to_string(trade.order))})}),
-                td({div({text(std::to_string(trade.login))})}),
-                td({div({text(account.name)})}),
-                td({div({text(trade.symbol)})}),
-                td({div({text(account.group)})}),
-                td({div({text(trade.cmd == 0 ? "buy" : "sell")})}),
-                td({div({text(std::to_string(trade.volume))})}),
-                td({div({text(format_double_for_AST(trade.close_price))})}),
-                td({div({text(format_double_for_AST(trade.storage))})}),
-                td({div({text(format_double_for_AST(trade.profit))})}),
-            }));
-        }
-
-        return table({
-            thead(thead_rows),
-            tbody(tbody_rows),
-            tfoot(tfoot_rows),
-        }, props({{"className", "table"}}));
-    };
-
-    // v.2
-    // TableBuilder top_close_profit_orders_table_builder("TopCloseProfitOrdersTable");
+    // auto create_top_close_profit_orders_table = [&](const std::vector<TradeRecord>& trades) -> Node {
+    //     std::vector<Node> thead_rows;
+    //     std::vector<Node> tbody_rows;
+    //     std::vector<Node> tfoot_rows;
     //
-    // top_close_profit_orders_table_builder.SetIdColumn("order");
-    // top_close_profit_orders_table_builder.SetOrderBy("order", "DESC");
-    // top_close_profit_orders_table_builder.EnableRefreshButton(false);
-    // top_close_profit_orders_table_builder.EnableBookmarksButton(false);
-    // top_close_profit_orders_table_builder.EnableExportButton(true);
+    //     // Thead
+    //     thead_rows.push_back(tr({
+    //         th({div({text("Order")})}),
+    //         th({div({text("Login")})}),
+    //         th({div({text("Name")})}),
+    //         th({div({text("Symbol")})}),
+    //         th({div({text("Group")})}),
+    //         th({div({text("Type")})}),
+    //         th({div({text("Volume")})}),
+    //         th({div({text("Close Price")})}),
+    //         th({div({text("Storage")})}),
+    //         th({div({text("Profit")})})
+    //     }));
     //
-    // top_close_profit_orders_table_builder.AddColumn({"order", "ORDER"});
-    // top_close_profit_orders_table_builder.AddColumn({"login", "LOGIN"});
-    // top_close_profit_orders_table_builder.AddColumn({"name", "NAME"});
-    // top_close_profit_orders_table_builder.AddColumn({"symbol", "SYMBOL"});
-    // top_close_profit_orders_table_builder.AddColumn({"group", "GROUP"});
-    // top_close_profit_orders_table_builder.AddColumn({"type", "TYPE"});
-    // top_close_profit_orders_table_builder.AddColumn({"volume", "VOLUME"});
-    // top_close_profit_orders_table_builder.AddColumn({"close_price", "CLOSE_PRICE"});
-    // top_close_profit_orders_table_builder.AddColumn({"storage", "SWAP"});
-    // top_close_profit_orders_table_builder.AddColumn({"profit", "AMOUNT"});
+    //     // Tbody
+    //     for (const auto& trade : trades) {
+    //         AccountRecord account;
     //
-    // for (const auto& trade : top_close_profit_orders_vector) {
-    //     AccountRecord account;
+    //         try {
+    //             server->GetAccountByLogin(trade.login, &account);
+    //         } catch (const std::exception& e) {
+    //             std::cerr << "[DailyTradesReportInterface]: " << e.what() << std::endl;
+    //         }
     //
-    //     try {
-    //         server->GetAccountByLogin(trade.login, &account);
-    //     } catch (const std::exception& e) {
-    //         std::cerr << "[DailyTradesReportInterface]: " << e.what() << std::endl;
+    //         tbody_rows.push_back(tr({
+    //             td({div({text(std::to_string(trade.order))})}),
+    //             td({div({text(std::to_string(trade.login))})}),
+    //             td({div({text(account.name)})}),
+    //             td({div({text(trade.symbol)})}),
+    //             td({div({text(account.group)})}),
+    //             td({div({text(trade.cmd == 0 ? "buy" : "sell")})}),
+    //             td({div({text(std::to_string(trade.volume))})}),
+    //             td({div({text(format_double_for_AST(trade.close_price))})}),
+    //             td({div({text(format_double_for_AST(trade.storage))})}),
+    //             td({div({text(format_double_for_AST(trade.profit))})}),
+    //         }));
     //     }
     //
-    //     top_close_profit_orders_table_builder.AddRow({
-    //         {"order", std::to_string(trade.order)},
-    //         {"login", std::to_string(trade.login)},
-    //         {"name", account.name},
-    //         {"symbol", trade.symbol},
-    //         {"group", account.group},
-    //         {"type", trade.cmd == 0 ? "buy" : "sell"},
-    //         {"volume", std::to_string(trade.volume)},
-    //         {"close_price", format_double_for_AST(trade.close_price)},
-    //         {"storage", format_double_for_AST(trade.storage)},
-    //         {"profit", format_double_for_AST(trade.profit)},
-    //     });
-    // }
-    //
-    // const JSONObject top_close_profit_orders_table_props = top_close_profit_orders_table_builder.CreateTableProps();
-    // const Node top_close_profit_orders_table_node = Table({}, top_close_profit_orders_table_props);
+    //     return table({
+    //         thead(thead_rows),
+    //         tbody(tbody_rows),
+    //         tfoot(tfoot_rows),
+    //     }, props({{"className", "table"}}));
+    // };
+
+    // v.2
+    TableBuilder top_close_profit_orders_table_builder("TopCloseProfitOrdersTable");
+
+    top_close_profit_orders_table_builder.SetIdColumn("order");
+    top_close_profit_orders_table_builder.SetOrderBy("order", "DESC");
+    top_close_profit_orders_table_builder.EnableRefreshButton(false);
+    top_close_profit_orders_table_builder.EnableBookmarksButton(false);
+    top_close_profit_orders_table_builder.EnableExportButton(true);
+
+    top_close_profit_orders_table_builder.AddColumn({"order", "ORDER"});
+    top_close_profit_orders_table_builder.AddColumn({"login", "LOGIN"});
+    top_close_profit_orders_table_builder.AddColumn({"name", "NAME"});
+    top_close_profit_orders_table_builder.AddColumn({"symbol", "SYMBOL"});
+    top_close_profit_orders_table_builder.AddColumn({"group", "GROUP"});
+    top_close_profit_orders_table_builder.AddColumn({"type", "TYPE"});
+    top_close_profit_orders_table_builder.AddColumn({"volume", "VOLUME"});
+    top_close_profit_orders_table_builder.AddColumn({"close_price", "CLOSE_PRICE"});
+    top_close_profit_orders_table_builder.AddColumn({"storage", "SWAP"});
+    top_close_profit_orders_table_builder.AddColumn({"profit", "AMOUNT"});
+
+    for (const auto& trade : top_close_profit_orders_vector) {
+        AccountRecord account;
+
+        try {
+            server->GetAccountByLogin(trade.login, &account);
+        } catch (const std::exception& e) {
+            std::cerr << "[DailyTradesReportInterface]: " << e.what() << std::endl;
+        }
+
+        top_close_profit_orders_table_builder.AddRow({
+            {"order", std::to_string(trade.order)},
+            {"login", std::to_string(trade.login)},
+            {"name", account.name},
+            {"symbol", trade.symbol},
+            {"group", account.group},
+            {"type", trade.cmd == 0 ? "buy" : "sell"},
+            {"volume", std::to_string(trade.volume)},
+            {"close_price", format_double_for_AST(trade.close_price)},
+            {"storage", format_double_for_AST(trade.storage)},
+            {"profit", format_double_for_AST(trade.profit)},
+        });
+    }
+
+    const JSONObject top_close_profit_orders_table_props = top_close_profit_orders_table_builder.CreateTableProps();
+    const Node top_close_profit_orders_table_node = Table({}, top_close_profit_orders_table_props);
 
     // Top close loss orders table
     std::vector<TradeRecord> top_close_loss_orders_vector = utils::CreateTopLossOrdersVector(close_trades_vector);
@@ -610,8 +610,8 @@ extern "C" void CreateReport(rapidjson::Value& request,
         h2({text("Client Trades Count")}),
         trades_count_chart_node,
         h2({text("Top Close Profit Orders")}),
-        create_top_close_profit_orders_table(top_close_profit_orders_vector), // v.1
-        // top_close_profit_orders_table_node,
+        // create_top_close_profit_orders_table(top_close_profit_orders_vector), // v.1
+        top_close_profit_orders_table_node,
         h2({text("Top Close Loss Orders")}),
         create_top_close_loss_orders_table(top_close_loss_orders_vector),    // v.1
         // top_close_loss_orders_table_node,
