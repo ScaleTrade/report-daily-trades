@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <iomanip>
 #include <sstream>
+#include <cstddef>
 #include <iostream>
 #include "ast/Ast.hpp"
 #include <rapidjson/document.h>
