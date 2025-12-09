@@ -232,33 +232,38 @@ namespace utils {
     }
 
     std::vector<TradeRecord> CreateTopProfitOrdersVector(const std::vector<TradeRecord>& trades) {
-        std::vector sorted_trades = trades;
+        std::vector<TradeRecord> result = trades;
 
-        std::sort(sorted_trades.begin(), sorted_trades.end(),
-                  [](const TradeRecord& a, const TradeRecord& b) {
-                      return a.profit > b.profit;
-                  });
+        size_t k = std::min(result.size(), static_cast<size_t>(10));
 
-        if (sorted_trades.size() > 10) {
-            sorted_trades.resize(10);
-        }
+        std::ranges::partial_sort(
+            result,
+            result.begin() + k,
+            [](const TradeRecord& a, const TradeRecord& b) {
+                return a.profit > b.profit;
+            }
+        );
 
-        return sorted_trades;
+        result.resize(k);
+        return result;
     }
 
     std::vector<TradeRecord> CreateTopLossOrdersVector(const std::vector<TradeRecord>& trades) {
-        std::vector sorted_trades = trades;
+        std::vector<TradeRecord> result = trades;
 
-        std::sort(sorted_trades.begin(), sorted_trades.end(),
-                  [](const TradeRecord& a, const TradeRecord& b) {
-                      return a.profit < b.profit;
-                  });
+        size_t k = std::min(result.size(), static_cast<size_t>(10));
 
-        if (sorted_trades.size() > 10) {
-            sorted_trades.resize(10);
-        }
+        std::ranges::partial_sort(
+            result,
+            result.begin() + k,
+            [](const TradeRecord& a, const TradeRecord& b) {
+                return a.profit < b.profit;
+            }
+        );
 
-        return sorted_trades;
-    };
+        result.resize(k);
+        return result;
+    }
+
 
 }
