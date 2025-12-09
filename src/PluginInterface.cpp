@@ -47,7 +47,7 @@ extern "C" void CreateReport(rapidjson::Value& request,
         server->GetOpenTradesByGroup(group_mask, from_two_weeks_ago, to, &open_trades_vector);
         server->GetAllGroups(&groups_vector);
 
-        for (auto close_trade : close_trades_vector) {
+        for (auto& close_trade : close_trades_vector) {
             AccountRecord account;
             double multiplier;
 
@@ -55,19 +55,26 @@ extern "C" void CreateReport(rapidjson::Value& request,
 
             for (const auto& group : groups_vector) {
                 if (group.group == account.group) {
+                    double usd_profit = 0.00;
+
                     UsdConvertedTrade converted_close_trade;
 
-                    server->CalculateConvertRateByCurrency(group.currency, "USD", close_trade.cmd, &multiplier);
+                    if (group.currency == "USD") {
+                        usd_profit = close_trade.profit;
+                    } else {
+                        server->CalculateConvertRateByCurrency(group.currency, "USD", close_trade.cmd, &multiplier);
+                        usd_profit = close_trade.profit * multiplier;
+                    }
 
+                    converted_close_trade.usd_profit = usd_profit;
                     converted_close_trade.close_time = close_trade.close_time;
-                    converted_close_trade.usd_profit = close_trade.profit * multiplier;
 
                     usd_converted_close_trades_vector.emplace_back(converted_close_trade);
                 }
             }
         }
 
-        for (auto open_trade : open_trades_vector) {
+        for (const auto& open_trade : open_trades_vector) {
             AccountRecord account;
             double multiplier;
 
@@ -75,14 +82,19 @@ extern "C" void CreateReport(rapidjson::Value& request,
 
             for (const auto& group : groups_vector) {
                 if (group.group == account.group) {
-                    UsdConvertedTrade converted_open_trade;
+                    double usd_profit = 0.00;
 
-                    server->CalculateConvertRateByCurrency(group.currency, "USD", open_trade.cmd, &multiplier);
+                    UsdConvertedTrade converted_close_trade;
 
-                    converted_open_trade.close_time = open_trade.close_time;
-                    converted_open_trade.usd_profit = open_trade.profit * multiplier;
+                    if (group.currency == "USD") {
+                        usd_profit = open_trade.profit;
+                    } else {
+                        server->CalculateConvertRateByCurrency(group.currency, "USD", open_trade.cmd, &multiplier);
+                        usd_profit = open_trade.profit * multiplier;
+                    }
 
-                    usd_converted_open_trades_vector.emplace_back(converted_open_trade);
+                    converted_close_trade.usd_profit = usd_profit;
+                    converted_close_trade.close_time = open_trade.close_time;
                 }
             }
         }

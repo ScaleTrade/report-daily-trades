@@ -4,8 +4,8 @@
 #include <ctime>
 
 struct UsdConvertedTrade {
-    time_t close_time;
-    double usd_profit;
+    time_t close_time = 0;
+    double usd_profit = 0.00;
 };
 
 struct PnlDataPoint {
