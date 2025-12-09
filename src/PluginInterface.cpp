@@ -227,7 +227,7 @@ extern "C" void CreateReport(rapidjson::Value& request,
     TableBuilder top_close_loss_orders_table_builder("TopCloseLossOrdersTable");
 
     top_close_loss_orders_table_builder.SetIdColumn("order");
-    top_close_loss_orders_table_builder.SetOrderBy("order", "DESC");
+    top_close_loss_orders_table_builder.SetOrderBy("order", "ASC");
     top_close_loss_orders_table_builder.EnableRefreshButton(false);
     top_close_loss_orders_table_builder.EnableBookmarksButton(false);
     top_close_loss_orders_table_builder.EnableExportButton(true);
