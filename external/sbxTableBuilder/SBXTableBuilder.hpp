@@ -81,6 +81,10 @@ public:
         _total_data = total_data;
     }
 
+    void SetTotalDataTitle(const std::string& total_data_title) {
+        _total_data_title = total_data_title;
+    }
+
     void EnableExportButton(const bool& enabled = true) {
         _show_export_button = enabled;
     }
@@ -111,8 +115,9 @@ public:
             {"showRefreshBtn", _show_refresh_button},
             {"showBookmarksBtn", _show_bookmarks_button},
             {"showTotal", _show_total},
+            {"totalDataTitle", _total_data_title},
             {"showExportBtn", _show_export_button},
-            {"structure", structure}
+            {"structure", structure},
         };
 
         if (!_total_data.empty()) {
@@ -133,5 +138,6 @@ private:
     bool _show_bookmarks_button = true;
     bool _show_export_button = true;
     bool _show_total = false;
+    std::string _total_data_title;
 };
 
