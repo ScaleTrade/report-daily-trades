@@ -249,7 +249,7 @@ namespace utils {
     std::vector<TradeRecord> CreateTopLossOrdersVector(const std::vector<TradeRecord>& trades) {
         std::vector sorted_trades = trades;
 
-        std::sort(sorted_trades.begin(), sorted_trades.end(),
+        std::sort(sorted_trades.end(), sorted_trades.begin(),
                   [](const TradeRecord& a, const TradeRecord& b) {
                       return a.profit < b.profit;
                   });
