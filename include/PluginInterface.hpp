@@ -9,8 +9,8 @@
 #include <rapidjson/document.h>
 #include "ast/Ast.hpp"
 #include "sbxTableBuilder/SBXTableBuilder.hpp"
-#include "Utils.hpp"
-#include "PluginStructures.hpp"
+#include "utils/Utils.hpp"
+#include "structures/PluginStructures.hpp"
 
 using namespace ast;
 
