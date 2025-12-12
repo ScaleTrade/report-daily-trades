@@ -292,7 +292,7 @@ extern "C" void CreateReport(rapidjson::Value& request,
     TableBuilder top_open_profit_orders_table_builder("TopOpenProfitOrdersTable");
 
     top_open_profit_orders_table_builder.SetIdColumn("order");
-    top_open_profit_orders_table_builder.SetOrderBy("order", "DESC");
+    top_open_profit_orders_table_builder.SetOrderBy("profit", "DESC");
     top_open_profit_orders_table_builder.EnableRefreshButton(false);
     top_open_profit_orders_table_builder.EnableBookmarksButton(false);
     top_open_profit_orders_table_builder.EnableExportButton(true);
@@ -304,7 +304,7 @@ extern "C" void CreateReport(rapidjson::Value& request,
     top_open_profit_orders_table_builder.AddColumn({"group", "GROUP", 5});
     top_open_profit_orders_table_builder.AddColumn({"type", "TYPE", 6});
     top_open_profit_orders_table_builder.AddColumn({"volume", "VOLUME", 7});
-    top_open_profit_orders_table_builder.AddColumn({"close_price", "CLOSE_PRICE", 8});
+    top_open_profit_orders_table_builder.AddColumn({"open_price", "OPEN_PRICE", 8});
     top_open_profit_orders_table_builder.AddColumn({"storage", "SWAP", 9});
     top_open_profit_orders_table_builder.AddColumn({"profit", "AMOUNT", 10});
 
@@ -339,7 +339,7 @@ extern "C" void CreateReport(rapidjson::Value& request,
     TableBuilder top_open_loss_orders_table_builder("TopOpenLossOrdersTable");
 
     top_open_loss_orders_table_builder.SetIdColumn("order");
-    top_open_loss_orders_table_builder.SetOrderBy("order", "DESC");
+    top_open_loss_orders_table_builder.SetOrderBy("profit", "ASC");
     top_open_loss_orders_table_builder.EnableRefreshButton(false);
     top_open_loss_orders_table_builder.EnableBookmarksButton(false);
     top_open_loss_orders_table_builder.EnableExportButton(true);
@@ -351,7 +351,7 @@ extern "C" void CreateReport(rapidjson::Value& request,
     top_open_loss_orders_table_builder.AddColumn({"group", "GROUP", 5});
     top_open_loss_orders_table_builder.AddColumn({"type", "TYPE", 6});
     top_open_loss_orders_table_builder.AddColumn({"volume", "VOLUME", 7});
-    top_open_loss_orders_table_builder.AddColumn({"close_price", "CLOSE_PRICE", 8});
+    top_open_loss_orders_table_builder.AddColumn({"open_price", "CLOSE_PRICE", 8});
     top_open_loss_orders_table_builder.AddColumn({"storage", "SWAP", 9});
     top_open_loss_orders_table_builder.AddColumn({"profit", "AMOUNT", 10});
 
