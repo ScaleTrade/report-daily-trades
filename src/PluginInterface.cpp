@@ -104,13 +104,6 @@ extern "C" void CreateReport(rapidjson::Value& request,
         std::cerr << "[DailyTradesReportInterface]: " << e.what() << std::endl;
     }
 
-    // Лямбда подготавливающая значения double для вставки в AST (округление до 2-х знаков)
-    auto format_double_for_AST = [](double value) -> std::string {
-        std::ostringstream oss;
-        oss << std::fixed << std::setprecision(2) << value;
-        return oss.str();
-    };
-
     // Profit / Lose chart
     const JSONArray pnl_chart_data = utils::CreatePnlChartData(usd_converted_close_trades_vector);
 
@@ -185,16 +178,16 @@ extern "C" void CreateReport(rapidjson::Value& request,
     top_close_profit_orders_table_builder.EnableBookmarksButton(false);
     top_close_profit_orders_table_builder.EnableExportButton(true);
 
-    top_close_profit_orders_table_builder.AddColumn({"order", "ORDER"});
-    top_close_profit_orders_table_builder.AddColumn({"login", "LOGIN"});
-    top_close_profit_orders_table_builder.AddColumn({"name", "NAME"});
-    top_close_profit_orders_table_builder.AddColumn({"symbol", "SYMBOL"});
-    top_close_profit_orders_table_builder.AddColumn({"group", "GROUP"});
-    top_close_profit_orders_table_builder.AddColumn({"type", "TYPE"});
-    top_close_profit_orders_table_builder.AddColumn({"volume", "VOLUME"});
-    top_close_profit_orders_table_builder.AddColumn({"close_price", "CLOSE_PRICE"});
-    top_close_profit_orders_table_builder.AddColumn({"storage", "SWAP"});
-    top_close_profit_orders_table_builder.AddColumn({"profit", "AMOUNT"});
+    top_close_profit_orders_table_builder.AddColumn({"order", "ORDER", 1});
+    top_close_profit_orders_table_builder.AddColumn({"login", "LOGIN", 2});
+    top_close_profit_orders_table_builder.AddColumn({"name", "NAME", 3});
+    top_close_profit_orders_table_builder.AddColumn({"symbol", "SYMBOL", 4});
+    top_close_profit_orders_table_builder.AddColumn({"group", "GROUP", 5});
+    top_close_profit_orders_table_builder.AddColumn({"type", "TYPE", 6});
+    top_close_profit_orders_table_builder.AddColumn({"volume", "VOLUME", 7});
+    top_close_profit_orders_table_builder.AddColumn({"close_price", "CLOSE_PRICE", 8});
+    top_close_profit_orders_table_builder.AddColumn({"storage", "SWAP", 9});
+    top_close_profit_orders_table_builder.AddColumn({"profit", "AMOUNT", 10});
 
     for (const auto& trade : top_close_profit_orders_vector) {
         AccountRecord account;
@@ -206,16 +199,16 @@ extern "C" void CreateReport(rapidjson::Value& request,
         }
 
         top_close_profit_orders_table_builder.AddRow({
-            {"order", std::to_string(trade.order)},
-            {"login", std::to_string(trade.login)},
+            {"order", utils::RoundDouble(trade.order, 0)},
+            {"login", utils::RoundDouble(trade.login, 0)},
             {"name", account.name},
             {"symbol", trade.symbol},
             {"group", account.group},
             {"type", trade.cmd == 0 ? "buy" : "sell"},
-            {"volume", std::to_string(trade.volume)},
-            {"close_price", format_double_for_AST(trade.close_price)},
-            {"storage", format_double_for_AST(trade.storage)},
-            {"profit", format_double_for_AST(trade.profit)},
+            {"volume", utils::RoundDouble(trade.volume, 0)},
+            {"close_price", utils::RoundDouble(trade.close_price, 2)},
+            {"storage", utils::RoundDouble(trade.storage, 2)},
+            {"profit", utils::RoundDouble(trade.profit, 2)},
         });
     }
 
@@ -232,16 +225,16 @@ extern "C" void CreateReport(rapidjson::Value& request,
     top_close_loss_orders_table_builder.EnableBookmarksButton(false);
     top_close_loss_orders_table_builder.EnableExportButton(true);
 
-    top_close_loss_orders_table_builder.AddColumn({"order", "ORDER"});
-    top_close_loss_orders_table_builder.AddColumn({"login", "LOGIN"});
-    top_close_loss_orders_table_builder.AddColumn({"name", "NAME"});
-    top_close_loss_orders_table_builder.AddColumn({"symbol", "SYMBOL"});
-    top_close_loss_orders_table_builder.AddColumn({"group", "GROUP"});
-    top_close_loss_orders_table_builder.AddColumn({"type", "TYPE"});
-    top_close_loss_orders_table_builder.AddColumn({"volume", "VOLUME"});
-    top_close_loss_orders_table_builder.AddColumn({"close_price", "CLOSE_PRICE"});
-    top_close_loss_orders_table_builder.AddColumn({"storage", "SWAP"});
-    top_close_loss_orders_table_builder.AddColumn({"profit", "AMOUNT"});
+    top_close_loss_orders_table_builder.AddColumn({"order", "ORDER", 1});
+    top_close_loss_orders_table_builder.AddColumn({"login", "LOGIN", 2});
+    top_close_loss_orders_table_builder.AddColumn({"name", "NAME", 3});
+    top_close_loss_orders_table_builder.AddColumn({"symbol", "SYMBOL", 4});
+    top_close_loss_orders_table_builder.AddColumn({"group", "GROUP", 5});
+    top_close_loss_orders_table_builder.AddColumn({"type", "TYPE", 6});
+    top_close_loss_orders_table_builder.AddColumn({"volume", "VOLUME", 7});
+    top_close_loss_orders_table_builder.AddColumn({"close_price", "CLOSE_PRICE", 8});
+    top_close_loss_orders_table_builder.AddColumn({"storage", "SWAP", 9});
+    top_close_loss_orders_table_builder.AddColumn({"profit", "AMOUNT", 10});
 
     for (const auto& trade : top_close_loss_orders_vector) {
         AccountRecord account;
@@ -253,16 +246,16 @@ extern "C" void CreateReport(rapidjson::Value& request,
         }
 
         top_close_loss_orders_table_builder.AddRow({
-            {"order", std::to_string(trade.order)},
-            {"login", std::to_string(trade.login)},
+            {"order", utils::RoundDouble(trade.order, 0)},
+            {"login", utils::RoundDouble(trade.login, 0)},
             {"name", account.name},
             {"symbol", trade.symbol},
             {"group", account.group},
             {"type", trade.cmd == 0 ? "buy" : "sell"},
-            {"volume", std::to_string(trade.volume)},
-            {"close_price", format_double_for_AST(trade.close_price)},
-            {"storage", format_double_for_AST(trade.storage)},
-            {"profit", format_double_for_AST(trade.profit)},
+            {"volume", utils::RoundDouble(trade.volume, 0)},
+            {"close_price", utils::RoundDouble(trade.close_price, 2)},
+            {"storage", utils::RoundDouble(trade.storage, 2)},
+            {"profit", utils::RoundDouble(trade.profit, 2)},
         });
     }
 
@@ -304,16 +297,16 @@ extern "C" void CreateReport(rapidjson::Value& request,
     top_open_profit_orders_table_builder.EnableBookmarksButton(false);
     top_open_profit_orders_table_builder.EnableExportButton(true);
 
-    top_open_profit_orders_table_builder.AddColumn({"order", "ORDER"});
-    top_open_profit_orders_table_builder.AddColumn({"login", "LOGIN"});
-    top_open_profit_orders_table_builder.AddColumn({"name", "NAME"});
-    top_open_profit_orders_table_builder.AddColumn({"symbol", "SYMBOL"});
-    top_open_profit_orders_table_builder.AddColumn({"group", "GROUP"});
-    top_open_profit_orders_table_builder.AddColumn({"type", "TYPE"});
-    top_open_profit_orders_table_builder.AddColumn({"volume", "VOLUME"});
-    top_open_profit_orders_table_builder.AddColumn({"close_price", "CLOSE_PRICE"});
-    top_open_profit_orders_table_builder.AddColumn({"storage", "SWAP"});
-    top_open_profit_orders_table_builder.AddColumn({"profit", "AMOUNT"});
+    top_open_profit_orders_table_builder.AddColumn({"order", "ORDER", 1});
+    top_open_profit_orders_table_builder.AddColumn({"login", "LOGIN", 2});
+    top_open_profit_orders_table_builder.AddColumn({"name", "NAME", 3});
+    top_open_profit_orders_table_builder.AddColumn({"symbol", "SYMBOL", 4});
+    top_open_profit_orders_table_builder.AddColumn({"group", "GROUP", 5});
+    top_open_profit_orders_table_builder.AddColumn({"type", "TYPE", 6});
+    top_open_profit_orders_table_builder.AddColumn({"volume", "VOLUME", 7});
+    top_open_profit_orders_table_builder.AddColumn({"close_price", "CLOSE_PRICE", 8});
+    top_open_profit_orders_table_builder.AddColumn({"storage", "SWAP", 9});
+    top_open_profit_orders_table_builder.AddColumn({"profit", "AMOUNT", 10});
 
     for (const auto& trade : top_open_profit_orders_vector) {
         AccountRecord account;
@@ -325,16 +318,16 @@ extern "C" void CreateReport(rapidjson::Value& request,
         }
 
         top_open_profit_orders_table_builder.AddRow({
-            {"order", std::to_string(trade.order)},
-            {"login", std::to_string(trade.login)},
+            {"order", utils::RoundDouble(trade.order, 0)},
+            {"login", utils::RoundDouble(trade.login, 1)},
             {"name", account.name},
             {"symbol", trade.symbol},
             {"group", account.group},
             {"type", trade.cmd == 0 ? "buy" : "sell"},
-            {"volume", std::to_string(trade.volume)},
-            {"close_price", format_double_for_AST(trade.close_price)},
-            {"storage", format_double_for_AST(trade.storage)},
-            {"profit", format_double_for_AST(trade.profit)},
+            {"volume", utils::RoundDouble(trade.volume, 0)},
+            {"close_price", utils::RoundDouble(trade.close_price, 2)},
+            {"storage", utils::RoundDouble(trade.storage, 2)},
+            {"profit", utils::RoundDouble(trade.profit, 2)},
         });
     }
 
@@ -351,16 +344,16 @@ extern "C" void CreateReport(rapidjson::Value& request,
     top_open_loss_orders_table_builder.EnableBookmarksButton(false);
     top_open_loss_orders_table_builder.EnableExportButton(true);
 
-    top_open_loss_orders_table_builder.AddColumn({"order", "ORDER"});
-    top_open_loss_orders_table_builder.AddColumn({"login", "LOGIN"});
-    top_open_loss_orders_table_builder.AddColumn({"name", "NAME"});
-    top_open_loss_orders_table_builder.AddColumn({"symbol", "SYMBOL"});
-    top_open_loss_orders_table_builder.AddColumn({"group", "GROUP"});
-    top_open_loss_orders_table_builder.AddColumn({"type", "TYPE"});
-    top_open_loss_orders_table_builder.AddColumn({"volume", "VOLUME"});
-    top_open_loss_orders_table_builder.AddColumn({"close_price", "CLOSE_PRICE"});
-    top_open_loss_orders_table_builder.AddColumn({"storage", "SWAP"});
-    top_open_loss_orders_table_builder.AddColumn({"profit", "AMOUNT"});
+    top_open_loss_orders_table_builder.AddColumn({"order", "ORDER", 1});
+    top_open_loss_orders_table_builder.AddColumn({"login", "LOGIN", 2});
+    top_open_loss_orders_table_builder.AddColumn({"name", "NAME", 3});
+    top_open_loss_orders_table_builder.AddColumn({"symbol", "SYMBOL", 4});
+    top_open_loss_orders_table_builder.AddColumn({"group", "GROUP", 5});
+    top_open_loss_orders_table_builder.AddColumn({"type", "TYPE", 6});
+    top_open_loss_orders_table_builder.AddColumn({"volume", "VOLUME", 7});
+    top_open_loss_orders_table_builder.AddColumn({"close_price", "CLOSE_PRICE", 8});
+    top_open_loss_orders_table_builder.AddColumn({"storage", "SWAP", 9});
+    top_open_loss_orders_table_builder.AddColumn({"profit", "AMOUNT", 10});
 
     for (const auto& trade : top_open_loss_orders_vector) {
         AccountRecord account;
@@ -372,16 +365,16 @@ extern "C" void CreateReport(rapidjson::Value& request,
         }
 
         top_open_loss_orders_table_builder.AddRow({
-            {"order", std::to_string(trade.order)},
-            {"login", std::to_string(trade.login)},
+            {"order", utils::RoundDouble(trade.order, 0)},
+            {"login", utils::RoundDouble(trade.login, 0)},
             {"name", account.name},
             {"symbol", trade.symbol},
             {"group", account.group},
             {"type", trade.cmd == 0 ? "buy" : "sell"},
-            {"volume", std::to_string(trade.volume)},
-            {"close_price", format_double_for_AST(trade.close_price)},
-            {"storage", format_double_for_AST(trade.storage)},
-            {"profit", format_double_for_AST(trade.profit)},
+            {"volume", utils::RoundDouble(trade.volume, 0)},
+            {"close_price", utils::RoundDouble(trade.close_price, 2)},
+            {"storage", utils::RoundDouble(trade.storage, 2)},
+            {"profit", utils::RoundDouble(trade.profit, 2)},
         });
     }
 
