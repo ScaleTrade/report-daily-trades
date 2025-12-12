@@ -105,9 +105,9 @@ namespace utils {
         return oss.str();
     }
 
-    double RoundDouble(const double& value, const int& digits) {
+    double TruncateDouble(const double& value, const int& digits) {
         const double factor = std::pow(10.0, digits);
-        return std::floor(value * factor) / factor;
+        return std::trunc(value * factor) / factor;
     }
 
     std::string GetGroupCurrencyByName(const std::vector<GroupRecord>& group_vector, const std::string& group_name) {

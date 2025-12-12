@@ -199,16 +199,16 @@ extern "C" void CreateReport(rapidjson::Value& request,
         }
 
         top_close_profit_orders_table_builder.AddRow({
-            {"order", utils::RoundDouble(trade.order, 0)},
-            {"login", utils::RoundDouble(trade.login, 0)},
+            {"order", utils::TruncateDouble(trade.order, 0)},
+            {"login", utils::TruncateDouble(trade.login, 0)},
             {"name", account.name},
             {"symbol", trade.symbol},
             {"group", account.group},
             {"type", trade.cmd == 0 ? "buy" : "sell"},
-            {"volume", utils::RoundDouble(trade.volume, 0)},
-            {"close_price", utils::RoundDouble(trade.close_price, 2)},
-            {"storage", utils::RoundDouble(trade.storage, 2)},
-            {"profit", utils::RoundDouble(trade.profit, 2)},
+            {"volume", utils::TruncateDouble(trade.volume, 0)},
+            {"close_price", utils::TruncateDouble(trade.close_price, 2)},
+            {"storage", utils::TruncateDouble(trade.storage, 2)},
+            {"profit", utils::TruncateDouble(trade.profit, 2)},
         });
     }
 
@@ -246,16 +246,16 @@ extern "C" void CreateReport(rapidjson::Value& request,
         }
 
         top_close_loss_orders_table_builder.AddRow({
-            {"order", utils::RoundDouble(trade.order, 0)},
-            {"login", utils::RoundDouble(trade.login, 0)},
+            {"order", utils::TruncateDouble(trade.order, 0)},
+            {"login", utils::TruncateDouble(trade.login, 0)},
             {"name", account.name},
             {"symbol", trade.symbol},
             {"group", account.group},
             {"type", trade.cmd == 0 ? "buy" : "sell"},
-            {"volume", utils::RoundDouble(trade.volume, 0)},
-            {"close_price", utils::RoundDouble(trade.close_price, 2)},
-            {"storage", utils::RoundDouble(trade.storage, 2)},
-            {"profit", utils::RoundDouble(trade.profit, 2)},
+            {"volume", utils::TruncateDouble(trade.volume, 0)},
+            {"close_price", utils::TruncateDouble(trade.close_price, 2)},
+            {"storage", utils::TruncateDouble(trade.storage, 2)},
+            {"profit", utils::TruncateDouble(trade.profit, 2)},
         });
     }
 
@@ -318,16 +318,16 @@ extern "C" void CreateReport(rapidjson::Value& request,
         }
 
         top_open_profit_orders_table_builder.AddRow({
-            {"order", utils::RoundDouble(trade.order, 0)},
-            {"login", utils::RoundDouble(trade.login, 1)},
+            {"order", utils::TruncateDouble(trade.order, 0)},
+            {"login", utils::TruncateDouble(trade.login, 1)},
             {"name", account.name},
             {"symbol", trade.symbol},
             {"group", account.group},
             {"type", trade.cmd == 0 ? "buy" : "sell"},
-            {"volume", utils::RoundDouble(trade.volume, 0)},
-            {"close_price", utils::RoundDouble(trade.close_price, 2)},
-            {"storage", utils::RoundDouble(trade.storage, 2)},
-            {"profit", utils::RoundDouble(trade.profit, 2)},
+            {"volume", utils::TruncateDouble(trade.volume, 0)},
+            {"close_price", utils::TruncateDouble(trade.close_price, 2)},
+            {"storage", utils::TruncateDouble(trade.storage, 2)},
+            {"profit", utils::TruncateDouble(trade.profit, 2)},
         });
     }
 
@@ -365,16 +365,16 @@ extern "C" void CreateReport(rapidjson::Value& request,
         }
 
         top_open_loss_orders_table_builder.AddRow({
-            {"order", utils::RoundDouble(trade.order, 0)},
-            {"login", utils::RoundDouble(trade.login, 0)},
+            {"order", utils::TruncateDouble(trade.order, 0)},
+            {"login", utils::TruncateDouble(trade.login, 0)},
             {"name", account.name},
             {"symbol", trade.symbol},
             {"group", account.group},
             {"type", trade.cmd == 0 ? "buy" : "sell"},
-            {"volume", utils::RoundDouble(trade.volume, 0)},
-            {"close_price", utils::RoundDouble(trade.close_price, 2)},
-            {"storage", utils::RoundDouble(trade.storage, 2)},
-            {"profit", utils::RoundDouble(trade.profit, 2)},
+            {"volume", utils::TruncateDouble(trade.volume, 0)},
+            {"close_price", utils::TruncateDouble(trade.close_price, 2)},
+            {"storage", utils::TruncateDouble(trade.storage, 2)},
+            {"profit", utils::TruncateDouble(trade.profit, 2)},
         });
     }
 
