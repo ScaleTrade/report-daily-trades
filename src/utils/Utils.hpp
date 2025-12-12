@@ -14,7 +14,7 @@
 #include "ast/Ast.hpp"
 #include <rapidjson/document.h>
 #include "Structures.hpp"
-#include "../structures/PluginStructures.hpp"
+#include "structures/PluginStructures.hpp"
 
 using namespace ast;
 
