@@ -24,7 +24,7 @@ namespace utils {
             text_object.AddMember("type", "#text", allocator);
 
             Value props(kObjectType);
-            props.AddMember("value", "Daily Trades report", allocator);
+            props.AddMember("value", "Trades History report", allocator);
 
             text_object.AddMember("props", props, allocator);
             children.PushBack(text_object, allocator);
@@ -96,12 +96,35 @@ namespace utils {
         response.AddMember("ui", ui_object, allocator);
     }
 
-    int CalculateTimestampForTwoWeeksAgo(const int timestamp) {
+    std::string FormatTimestampToString(const time_t& timestamp) {
+        std::tm tm{};
+        localtime_r(&timestamp, &tm);
+
+        std::ostringstream oss;
+        oss << std::put_time(&tm, "%Y.%m.%d %H:%M:%S");
+        return oss.str();
+    }
+
+    double RoundDouble(const double& value, const int& digits) {
+        const double factor = std::pow(10.0, digits);
+        return std::round(value * factor);
+    }
+
+    std::string GetGroupCurrencyByName(const std::vector<GroupRecord>& group_vector, const std::string& group_name) {
+        for (const auto& group : group_vector) {
+            if (group.group == group_name) {
+                return group.currency;
+            }
+        }
+        return "N/A";   // группа не найдена - валюта не определена
+    }
+
+    int CalculateTimestampForTwoWeeksAgo(const int& timestamp) {
         constexpr int two_weeks_interval = 14 * 24 * 60 * 60;
         return timestamp - two_weeks_interval;
     }
 
-    std::string FormatDateForChart(time_t time) {
+    std::string FormatDateForChart(const time_t& time) {
         std::tm tm{};
         #ifdef _WIN32
                 localtime_s(&tm, &t);

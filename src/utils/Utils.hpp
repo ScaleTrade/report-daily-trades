@@ -23,9 +23,15 @@ namespace utils {
               rapidjson::Value& response,
               rapidjson::Document::AllocatorType& allocator);
 
-    int CalculateTimestampForTwoWeeksAgo(const int timestamp);
+    std::string FormatTimestampToString(const time_t& timestamp);
 
-    std::string FormatDateForChart(time_t time);
+    double RoundDouble(const double& value, const int& digits);
+
+    std::string GetGroupCurrencyByName(const std::vector<GroupRecord>& group_vector, const std::string& group_name);
+
+    int CalculateTimestampForTwoWeeksAgo(const int& timestamp);
+
+    std::string FormatDateForChart(const time_t& time);
 
     JSONArray CreatePnlChartData(const std::vector<UsdConvertedTrade>& trades);
 
