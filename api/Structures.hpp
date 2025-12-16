@@ -748,6 +748,8 @@ struct AccountRecord {
     MarginLevel margin;                          // todo как идея
 
     int db_state = DbStateType::DB_NO_CHANGE;
+    //Online stats
+    int online = 0;
 };
 
 
@@ -910,7 +912,7 @@ struct ServerLog {
 };
 
 struct CServerInterface {
-    virtual int TickSet(TickInfo& tick); //set quotes tick
+        virtual int TickSet(TickInfo& tick); //set quotes tick
     virtual int LogsOut(const std::string& type, const std::string& message);  //send logs to console
     virtual int GetLogs(time_t from, time_t to, const std::string &type, const std::string &filter, std::vector<ServerLog>* logs);  //get logs
     static int GetApiVersion() { return PLUGIN_SERVER_API; }
@@ -926,6 +928,7 @@ struct CServerInterface {
     virtual int DeleteAccount(int login);                                                           //Del acccount by login
     virtual int GetMarginLevelByGroup(const std::string& group, std::vector<MarginLevel>* margins); //Get marginLevels by group
     virtual int GetAccountsEquitiesByGroup(time_t from, time_t to, const std::string& group_filter, std::vector<EquityRecord>* equities); //Get equities by group
+    virtual int GetAccountsEquitiesByLogin(time_t from, time_t to, int login, std::vector<EquityRecord>* equities); //Get equities by group
 
     //+------------------------------------------------------------------+
     // Trades
