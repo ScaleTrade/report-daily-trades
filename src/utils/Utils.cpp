@@ -134,7 +134,7 @@ namespace utils {
                 std::ostringstream oss;
                 oss << std::put_time(&tm, "%Y.%m.%d");
                 return oss.str();
-            }
+    }
 
     JSONArray CreatePnlChartData(const std::vector<UsdConvertedTrade>& trades) {
         std::map<std::string, PnlDataPoint> daily_data;
