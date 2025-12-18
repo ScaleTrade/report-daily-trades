@@ -174,6 +174,7 @@ extern "C" void CreateReport(rapidjson::Value& request,
 
     top_close_profit_orders_table_builder.SetIdColumn("order");
     top_close_profit_orders_table_builder.SetOrderBy("profit", "DESC");
+    top_close_profit_orders_table_builder.EnableAutoSave(false);
     top_close_profit_orders_table_builder.EnableRefreshButton(false);
     top_close_profit_orders_table_builder.EnableBookmarksButton(false);
     top_close_profit_orders_table_builder.EnableExportButton(true);
@@ -199,16 +200,16 @@ extern "C" void CreateReport(rapidjson::Value& request,
         }
 
         top_close_profit_orders_table_builder.AddRow({
-            {"order", utils::TruncateDouble(trade.order, 0)},
-            {"login", utils::TruncateDouble(trade.login, 0)},
-            {"name", account.name},
-            {"symbol", trade.symbol},
-            {"group", account.group},
-            {"type", trade.cmd == 0 ? "buy" : "sell"},
-            {"volume", utils::TruncateDouble(trade.volume, 0)},
-            {"close_price", utils::TruncateDouble(trade.close_price, 2)},
-            {"storage", utils::TruncateDouble(trade.storage, 2)},
-            {"profit", utils::TruncateDouble(trade.profit, 2)},
+            utils::TruncateDouble(trade.order, 0),
+            utils::TruncateDouble(trade.login, 0),
+            account.name,
+            trade.symbol,
+            account.group,
+            trade.cmd == 0 ? "buy" : "sell",
+            utils::TruncateDouble(trade.volume, 0),
+            utils::TruncateDouble(trade.close_price, 2),
+            utils::TruncateDouble(trade.storage, 2),
+            utils::TruncateDouble(trade.profit, 2),
         });
     }
 
@@ -221,6 +222,7 @@ extern "C" void CreateReport(rapidjson::Value& request,
 
     top_close_loss_orders_table_builder.SetIdColumn("order");
     top_close_loss_orders_table_builder.SetOrderBy("profit", "ASC");
+    top_close_loss_orders_table_builder.EnableAutoSave(false);
     top_close_loss_orders_table_builder.EnableRefreshButton(false);
     top_close_loss_orders_table_builder.EnableBookmarksButton(false);
     top_close_loss_orders_table_builder.EnableExportButton(true);
@@ -246,16 +248,16 @@ extern "C" void CreateReport(rapidjson::Value& request,
         }
 
         top_close_loss_orders_table_builder.AddRow({
-            {"order", utils::TruncateDouble(trade.order, 0)},
-            {"login", utils::TruncateDouble(trade.login, 0)},
-            {"name", account.name},
-            {"symbol", trade.symbol},
-            {"group", account.group},
-            {"type", trade.cmd == 0 ? "buy" : "sell"},
-            {"volume", utils::TruncateDouble(trade.volume, 0)},
-            {"close_price", utils::TruncateDouble(trade.close_price, 2)},
-            {"storage", utils::TruncateDouble(trade.storage, 2)},
-            {"profit", utils::TruncateDouble(trade.profit, 2)},
+            utils::TruncateDouble(trade.order, 0),
+            utils::TruncateDouble(trade.login, 0),
+            account.name,
+            trade.symbol,
+            account.group,
+            trade.cmd == 0 ? "buy" : "sell",
+            utils::TruncateDouble(trade.volume, 0),
+            utils::TruncateDouble(trade.close_price, 2),
+            utils::TruncateDouble(trade.storage, 2),
+            utils::TruncateDouble(trade.profit, 2),
         });
     }
 
@@ -293,6 +295,7 @@ extern "C" void CreateReport(rapidjson::Value& request,
 
     top_open_profit_orders_table_builder.SetIdColumn("order");
     top_open_profit_orders_table_builder.SetOrderBy("profit", "DESC");
+    top_open_profit_orders_table_builder.EnableAutoSave(false);
     top_open_profit_orders_table_builder.EnableRefreshButton(false);
     top_open_profit_orders_table_builder.EnableBookmarksButton(false);
     top_open_profit_orders_table_builder.EnableExportButton(true);
@@ -318,16 +321,16 @@ extern "C" void CreateReport(rapidjson::Value& request,
         }
 
         top_open_profit_orders_table_builder.AddRow({
-            {"order", utils::TruncateDouble(trade.order, 0)},
-            {"login", utils::TruncateDouble(trade.login, 1)},
-            {"name", account.name},
-            {"symbol", trade.symbol},
-            {"group", account.group},
-            {"type", trade.cmd == 0 ? "buy" : "sell"},
-            {"volume", utils::TruncateDouble(trade.volume, 0)},
-            {"close_price", utils::TruncateDouble(trade.close_price, 2)},
-            {"storage", utils::TruncateDouble(trade.storage, 2)},
-            {"profit", utils::TruncateDouble(trade.profit, 2)},
+            utils::TruncateDouble(trade.order, 0),
+            utils::TruncateDouble(trade.login, 1),
+            account.name,
+            trade.symbol,
+            account.group,
+            trade.cmd == 0 ? "buy" : "sell",
+            utils::TruncateDouble(trade.volume, 0),
+            utils::TruncateDouble(trade.close_price, 2),
+            utils::TruncateDouble(trade.storage, 2),
+            utils::TruncateDouble(trade.profit, 2),
         });
     }
 
@@ -340,6 +343,7 @@ extern "C" void CreateReport(rapidjson::Value& request,
 
     top_open_loss_orders_table_builder.SetIdColumn("order");
     top_open_loss_orders_table_builder.SetOrderBy("profit", "ASC");
+    top_open_loss_orders_table_builder.EnableAutoSave(false);
     top_open_loss_orders_table_builder.EnableRefreshButton(false);
     top_open_loss_orders_table_builder.EnableBookmarksButton(false);
     top_open_loss_orders_table_builder.EnableExportButton(true);
@@ -365,16 +369,16 @@ extern "C" void CreateReport(rapidjson::Value& request,
         }
 
         top_open_loss_orders_table_builder.AddRow({
-            {"order", utils::TruncateDouble(trade.order, 0)},
-            {"login", utils::TruncateDouble(trade.login, 0)},
-            {"name", account.name},
-            {"symbol", trade.symbol},
-            {"group", account.group},
-            {"type", trade.cmd == 0 ? "buy" : "sell"},
-            {"volume", utils::TruncateDouble(trade.volume, 0)},
-            {"close_price", utils::TruncateDouble(trade.close_price, 2)},
-            {"storage", utils::TruncateDouble(trade.storage, 2)},
-            {"profit", utils::TruncateDouble(trade.profit, 2)},
+            utils::TruncateDouble(trade.order, 0),
+            utils::TruncateDouble(trade.login, 0),
+            account.name,
+            trade.symbol,
+            account.group,
+            trade.cmd == 0 ? "buy" : "sell",
+            utils::TruncateDouble(trade.volume, 0),
+            utils::TruncateDouble(trade.close_price, 2),
+            utils::TruncateDouble(trade.storage, 2),
+            utils::TruncateDouble(trade.profit, 2),
         });
     }
 
