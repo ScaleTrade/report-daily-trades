@@ -656,21 +656,20 @@ enum {
 enum { OTP_MODE_DISABLED = 0, OTP_MODE_TOTP_SHA256 = 1 };
 
 struct EquityRecord {
-    int login;
-    time_t create_time;
-    std::string group;
-    int leverage;
-    double balance = 0.0;
-    double prevbalance = 0.0;
-    double credit = 0.0;
-    double equity = 0.0;
-    double profit = 0.0;
-    double storage = 0.0;
-    double commission = 0.0;
-    double margin = 0.0;
-    double margin_free = 0.0;
-    double margin_level = 0.0;
-    std::string currency;
+    int               login;
+    time_t            create_time;
+    std::string       group;
+    double            balance = 0.0;
+    double            prevbalance = 0.0;
+    double            credit = 0.0;
+    double            equity = 0.0;
+    double            profit = 0.0;
+    double            storage = 0.0;
+    double            commission = 0.0;
+    double            margin = 0.0;
+    double            margin_free = 0.0;
+    double            margin_level = 0.0;
+    std::string       currency;
 };
 
 struct MarginLevel {
