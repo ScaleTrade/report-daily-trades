@@ -13,8 +13,8 @@
 #include <iostream>
 #include "ast/Ast.hpp"
 #include <rapidjson/document.h>
-#include "Structures.hpp"
-#include "structures/PluginStructures.hpp"
+#include "Structures.h"
+#include "structures/PluginStructures.h"
 
 using namespace ast;
 

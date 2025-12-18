@@ -5,12 +5,12 @@
 #include <thread>
 #include <atomic>
 #include <string>
-#include "Structures.hpp"
+#include "Structures.h"
 #include <rapidjson/document.h>
 #include "ast/Ast.hpp"
 #include "sbxTableBuilder/SBXTableBuilder.hpp"
-#include "utils/Utils.hpp"
-#include "structures/PluginStructures.hpp"
+#include "utils/Utils.h"
+#include "structures/PluginStructures.h"
 
 using namespace ast;
 
