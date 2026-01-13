@@ -1,27 +1,27 @@
 #pragma once
 
-#include <string>
 #include <ctime>
+#include <string>
 
 struct UsdConvertedTrade {
     time_t close_time;
-    double usd_profit;;
+    double usd_profit;
 };
 
 struct PnlDataPoint {
     std::string date;
-    int profit;
-    int loss;
-    int total;
+    int         profit;
+    int         loss;
+    int         total;
 };
 
 struct TradesCountDataPoint {
     std::string date;
-    int profit;
-    int loss;
+    int         profit;
+    int         loss;
 };
 
 struct OpenPositionsPieDataPoint {
     std::string name;
-    double value = 0.0;
+    double      value = 0.0;
 };

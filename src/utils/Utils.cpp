@@ -1,8 +1,8 @@
 #include "Utils.h"
 
 namespace utils {
-    void CreateUI(const ast::Node& node,
-                  rapidjson::Value& response,
+    void CreateUI(const ast::Node&                    node,
+                  rapidjson::Value&                   response,
                   rapidjson::Document::AllocatorType& allocator) {
         // Content
         Value node_object(kObjectType);
@@ -79,14 +79,12 @@ namespace utils {
             footer_array.PushBack(space_object, allocator);
         }
 
-
         // Modal
         Value model_object(kObjectType);
         model_object.AddMember("size", "xxxl", allocator);
         model_object.AddMember("headerContent", header_array, allocator);
         model_object.AddMember("footerContent", footer_array, allocator);
         model_object.AddMember("content", content_array, allocator);
-
 
         // UI
         Value ui_object(kObjectType);
@@ -96,12 +94,12 @@ namespace utils {
         response.AddMember("ui", ui_object, allocator);
     }
 
-    std::string FormatTimestampToString(const time_t& timestamp) {
+    std::string FormatTimestampToString(const time_t& timestamp, const std::string& format) {
         std::tm tm{};
         localtime_r(&timestamp, &tm);
 
         std::ostringstream oss;
-        oss << std::put_time(&tm, "%Y.%m.%d %H:%M:%S");
+        oss << std::put_time(&tm, format.c_str());
         return oss.str();
     }
 
@@ -110,13 +108,14 @@ namespace utils {
         return std::trunc(value * factor) / factor;
     }
 
-    std::string GetGroupCurrencyByName(const std::vector<GroupRecord>& group_vector, const std::string& group_name) {
+    std::string GetGroupCurrencyByName(const std::vector<GroupRecord>& group_vector,
+                                       const std::string&              group_name) {
         for (const auto& group : group_vector) {
             if (group.group == group_name) {
                 return group.currency;
             }
         }
-        return "N/A";   // группа не найдена - валюта не определена
+        return "N/A"; // группа не найдена - валюта не определена
     }
 
     int CalculateTimestampForTwoWeeksAgo(const int& timestamp) {
@@ -126,14 +125,14 @@ namespace utils {
 
     std::string FormatDateForChart(const time_t& time) {
         std::tm tm{};
-        #ifdef _WIN32
-                localtime_s(&tm, &t);
-        #else
-                localtime_r(&time, &tm);
-        #endif
-                std::ostringstream oss;
-                oss << std::put_time(&tm, "%Y.%m.%d");
-                return oss.str();
+#ifdef _WIN32
+        localtime_s(&tm, &t);
+#else
+        localtime_r(&time, &tm);
+#endif
+        std::ostringstream oss;
+        oss << std::put_time(&tm, "%Y.%m.%d");
+        return oss.str();
     }
 
     JSONArray CreatePnlChartData(const std::vector<UsdConvertedTrade>& trades) {
@@ -143,7 +142,7 @@ namespace utils {
             std::string day = FormatDateForChart(trade.close_time);
 
             auto& data_point = daily_data[day];
-            data_point.date = day;
+            data_point.date  = day;
 
             if (trade.usd_profit > 0) {
                 data_point.profit += trade.usd_profit;
@@ -159,17 +158,16 @@ namespace utils {
             data_points.push_back(data_point);
         }
 
-        std::sort(data_points.begin(), data_points.end(),
-                [](const PnlDataPoint& a,const PnlDataPoint& b) {
-                        return a.date < b.date;
-                 });
+        std::sort(data_points.begin(),
+                  data_points.end(),
+                  [](const PnlDataPoint& a, const PnlDataPoint& b) { return a.date < b.date; });
 
         JSONArray chart_data;
         for (const auto& data_point : data_points) {
             JSONObject point;
-            point["day"]   = JSONValue(data_point.date);
-            point["profit"] = JSONValue(static_cast<double>(data_point.profit));
-            point["loss"] = JSONValue(static_cast<double>(data_point.loss));
+            point["day"]         = JSONValue(data_point.date);
+            point["profit"]      = JSONValue(static_cast<double>(data_point.profit));
+            point["loss"]        = JSONValue(static_cast<double>(data_point.loss));
             point["profit/loss"] = JSONValue(static_cast<double>(data_point.total));
 
             chart_data.emplace_back(point);
@@ -185,7 +183,7 @@ namespace utils {
             std::string day = FormatDateForChart(trade.close_time);
 
             auto& data_point = daily_data[day];
-            data_point.date = day;
+            data_point.date  = day;
 
             if (trade.profit > 0) {
                 data_point.profit += 1;
@@ -199,7 +197,8 @@ namespace utils {
             data_points.push_back(data_point);
         }
 
-        std::sort(data_points.begin(), data_points.end(),
+        std::sort(data_points.begin(),
+                  data_points.end(),
                   [](const TradesCountDataPoint& a, const TradesCountDataPoint& b) {
                       return a.date < b.date;
                   });
@@ -207,9 +206,9 @@ namespace utils {
         JSONArray chart_data;
         for (const auto& data_point : data_points) {
             JSONObject point;
-            point["day"] = JSONValue(data_point.date);
+            point["day"]    = JSONValue(data_point.date);
             point["profit"] = JSONValue(static_cast<double>(data_point.profit));
-            point["loss"] = JSONValue(static_cast<double>(data_point.loss));
+            point["loss"]   = JSONValue(static_cast<double>(data_point.loss));
 
             chart_data.emplace_back(point);
         }
@@ -219,7 +218,7 @@ namespace utils {
 
     JSONArray CreateOpenPositionsPieChartData(const std::vector<UsdConvertedTrade>& trades) {
         double total_profit = 0.0;
-        double total_loss = 0.0;
+        double total_loss   = 0.0;
 
         for (const auto& trade : trades) {
             if (trade.usd_profit >= 0)
@@ -229,13 +228,12 @@ namespace utils {
         }
 
         double total = total_profit + total_loss;
-        if (total == 0.0) return JSONArray{}; // нет открытых позиций с P/L
+        if (total == 0.0)
+            return JSONArray{}; // нет открытых позиций с P/L
 
         JSONArray chart_data;
 
-        auto round2 = [](double value) -> double {
-            return std::round(value * 100.0) / 100.0;
-        };
+        auto round2 = [](double value) -> double { return std::round(value * 100.0) / 100.0; };
 
         if (total_profit > 0) {
             JSONObject profit_point;
@@ -256,23 +254,25 @@ namespace utils {
 
     std::vector<TradeRecord> CreateTopProfitOrdersVector(const std::vector<TradeRecord>& trades) {
         std::vector<TradeRecord> result = trades;
-        size_t k = std::min(result.size(), size_t(10));
-        std::partial_sort(result.begin(), result.begin() + k, result.end(),
-                          [](const TradeRecord& a, const TradeRecord& b) {
-                              return a.profit > b.profit;
-                          });
+        size_t                   k      = std::min(result.size(), size_t(10));
+        std::partial_sort(
+            result.begin(),
+            result.begin() + k,
+            result.end(),
+            [](const TradeRecord& a, const TradeRecord& b) { return a.profit > b.profit; });
         result.resize(k);
         return result;
     }
 
     std::vector<TradeRecord> CreateTopLossOrdersVector(const std::vector<TradeRecord>& trades) {
         std::vector<TradeRecord> result = trades;
-        size_t k = std::min(result.size(), size_t(10));
-        std::partial_sort(result.begin(), result.begin() + k, result.end(),
-                          [](const TradeRecord& a, const TradeRecord& b) {
-                              return a.profit < b.profit;
-                          });
+        size_t                   k      = std::min(result.size(), size_t(10));
+        std::partial_sort(
+            result.begin(),
+            result.begin() + k,
+            result.end(),
+            [](const TradeRecord& a, const TradeRecord& b) { return a.profit < b.profit; });
         result.resize(k);
         return result;
     }
-}
+} // namespace utils

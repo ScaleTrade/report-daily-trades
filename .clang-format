@@ -1,0 +1,91 @@
+# ============================================================
+# clang-format configuration,
+# created by: Yuriy Dubinin, ScaleTrade.
+# ============================================================
+
+BasedOnStyle: LLVM
+Standard: c++20
+
+# ------------------------------------------------------------
+# Indentation
+# ------------------------------------------------------------
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never
+
+NamespaceIndentation: All
+IndentAccessModifiers: false
+IndentCaseLabels: true
+IndentExternBlock: AfterExternBlock
+
+# ------------------------------------------------------------
+# Braces
+# ------------------------------------------------------------
+BreakBeforeBraces: Attach
+BraceWrapping:
+  AfterClass: false
+  AfterStruct: false
+  AfterNamespace: false
+  AfterFunction: false
+  BeforeElse: false
+  SplitEmptyFunction: false
+  SplitEmptyRecord: false
+  SplitEmptyNamespace: false
+
+# ------------------------------------------------------------
+# Classes & Functions
+# ------------------------------------------------------------
+AccessModifierOffset: -4
+AllowShortFunctionsOnASingleLine: Inline
+AllowShortIfStatementsOnASingleLine: Never
+AlwaysBreakAfterDefinitionReturnType: None
+
+# ------------------------------------------------------------
+# Line length
+# ------------------------------------------------------------
+ColumnLimit: 100
+
+# ------------------------------------------------------------
+# Includes
+# ------------------------------------------------------------
+SortIncludes: true
+IncludeBlocks: Regroup
+
+IncludeCategories:
+  # 1️⃣ STL
+  - Regex: '^<([a-z_]+)>'
+    Priority: 1
+
+  # 2️⃣ Third-party libraries (httplib + openssl + rapidjson)
+  - Regex: '^(<httplib/|<openssl/|<rapidjson/stb/|"(httplib|openssl|rapidjson|stb)/)'
+    Priority: 2
+
+  # 3️⃣ Project headers (architecture order)
+  - Regex: '^<(config|db|repositories|models|network|services|validators|utils)/|"(config|db|repositories|models|network|services|validators|utils)/'
+    Priority: 3
+
+  # 4️⃣ Fallback
+  - Regex: '.*'
+    Priority: 4
+
+# ------------------------------------------------------------
+# Misc
+# ------------------------------------------------------------
+PointerAlignment: Left
+ReferenceAlignment: Left
+SpacesInParentheses: false
+SpaceBeforeParens: ControlStatements
+
+# ------------------------------------------------------------
+# Alignment
+# ------------------------------------------------------------
+AlignConsecutiveDeclarations: true
+AlignConsecutiveAssignments: true
+AlignConsecutiveBitFields: true
+
+# ------------------------------------------------------------
+# Parameters formatting
+# ------------------------------------------------------------
+BinPackParameters: false
+BinPackArguments: false
+AllowAllParametersOfDeclarationOnNextLine: false
