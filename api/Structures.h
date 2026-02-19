@@ -837,60 +837,61 @@ struct GroupRecordSec {
 };
 
 struct GroupRecord {
-    std::string group;
-    int enable = 0;
-    int timeout = 0;
-    int otp_mode = 0;
+    int grp_index;                // Индекс группы
+    std::string group;            // Имя группы
+    int enable = 0;               // Включена ли группа
+    int timeout = 0;              // Тайм-аут подтверждения сделок
+    int otp_mode = 0;             // Режим одноразовых паролей
 
-    std::string company;
-    std::string signature;
-    std::string support_page;
-    std::string smtp_server;
-    std::string smtp_login;
-    std::string smtp_password;
-    std::string support_email;
-    std::string templates;
+    std::string company;          // Название компании
+    std::string signature;        // Подпись в отчетах
+    std::string support_page;     // Страница поддержки
+    std::string smtp_server;      // SMTP-сервер
+    std::string smtp_login;       // Логин SMTP
+    std::string smtp_password;    // Пароль SMTP
+    std::string support_email;    // Почта поддержки
+    std::string templates;        // Директория шаблонов отчетов
 
-    int copies = 0;
-    int reports = 0;
-    int default_leverage = 0;
-    double default_deposit = 0.0;
-    int maxsecurities = 0;
+    int copies = 0;               // Число копий отчетов
+    int reports = 0;              // Включены ли отчеты
+    int default_leverage = 0;     // Значение плеча по умолчанию
+    double default_deposit = 0.0; // Депозит по умолчанию
+    int maxsecurities = 0;        // Максимальное число инструментов
 
-    std::unordered_map<int, GroupRecordSec> secgroups;
-    std::unordered_map<std::string, GroupRecordMargin> secmargins;
+    std::unordered_map<int, GroupRecordSec> secgroups;               // Групповые настройки торговли символов
+    std::unordered_map<std::string, GroupRecordMargin> secmargins;   // Настройки маржи symbol
 
-    int secmargins_total = 0;
+    int secmargins_total = 0;                                     // Количество специальных настроек маржи
 
-    std::string currency;
-    double credit = 0.0;
-    int margin_call = 0;
-    int margin_mode = 1;
-    int margin_stopout = 0;
-    double interestrate = 0.0;
+    std::string currency;             // Валюта счета -> присваивается аккаунту
+    double credit = 0.0;              // Виртуальный кредит
+    int margin_call = 0;              // Уровень Margin Call
+    int margin_mode = 1;              // Режим маржи default = MARGIN_MODE_USE_ALL
+    int margin_stopout = 0;           // Уровень Stop Out
+    double interestrate = 0.0;        // Процентная ставка
 
-    int use_swap = 0;
-    int news = 0;
-    int rights = 0;
-    int check_ie_prices = 0;
-    int maxpositions = 0;
-    int close_reopen = 0;
-    int hedge_prohibited = 0;
-    int close_fifo = 0;
-    int hedge_largeleg = 0;
+    int use_swap = 0;                 // Использование свопов
+    int news = 0;                     // Разрешен ли доступ к новостям
+    int rights = 0;                   // Права группы
+    int check_ie_prices = 0;          // Проверять ли цены IE
+    int maxpositions = 0;             // Максимальное количество позиций
+    int close_reopen = 0;             // Переоткрытие позиций
+    int hedge_prohibited = 0;         // Запрет хеджирования
+    int close_fifo = 0;               // Принудительное закрытие FIFO
+    int hedge_largeleg = 0;           // Использовать маржу на большую ногу
 
-    std::string securities_hash;
+    std::string securities_hash;      // Хеш-код инструментов
 
-    int margin_type = 0;
-    int archive_period = 0;
-    int archive_max_balance = 0;
-    int stopout_skip_hedged = 0;
-    int archive_pending_period = 0;
+    int margin_type = 0;              // Тип маржи
+    int archive_period = 0;           // Срок архивирования (в днях)
+    int archive_max_balance = 0;      // Максимальный баланс для архивирования
+    int stopout_skip_hedged = 0;      // Исключать полностью хеджированные счета из Stop Out
+    int archive_pending_period = 0;   // Период очистки отложенных ордеров
 
-    unsigned int news_languages[8]{};
-    unsigned int news_languages_total = 0;
+    unsigned int news_languages[8]{};     // Языки новостей
+    unsigned int news_languages_total = 0;// Количество языков новостей
 
-    int reserved[17]{};
+    int reserved[17]{};               // Зарезервированные поля
 };
 
 struct CandleRecord {
