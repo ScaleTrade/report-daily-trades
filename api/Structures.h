@@ -307,7 +307,7 @@ inline std::string FormatError(const int retcode) {
         {RET_LICENSE_NOT_ACTIVE, "Your license has expired! Please renew it to continue using the trading platform."},
 
     };
-    for (auto& error: errors)
+    for (auto &error: errors)
         if (error.code == retcode) return (error.desc);
     return "Unknown error";
 }
@@ -369,20 +369,20 @@ enum {
 };
 
 enum {
-    REPORT_NONE_TYPE,                    //report without filter
-    REPORT_RANGE_TYPE,                   //report filter with time range
-    REPORT_DAILY_TYPE,                   //report filter by one day
-    REPORT_ACCOUNT_TYPE,                 //report filter by account
-    REPORT_SYMBOL_TYPE,                  //report filter by account
-    REPORT_GROUP_TYPE,                   //report filter with group mask
-    REPORT_RANGE_GROUP_TYPE,             //report filter one day and group mask
-    REPORT_DAILY_GROUP_TYPE,             //report filter one day and group mask
-    REPORT_RANGE_ACCOUNT_TYPE,           //report filter with time range and account
-    REPORT_DAILY_ACCOUNT_TYPE,           //report filter by one day and account
-    REPORT_RANGE_SYMBOL_TYPE,            //report filter with time range and account
-    REPORT_DAILY_SYMBOL_TYPE,            //report filter by one day and account
-    REPORT_RANGE_GROUP_SYMBOL_TYPE,      //report filter with time range and group and symbols
-    REPORT_DAILY_GROUP_SYMBOL_TYPE       //report filter by one day and groups and symbols
+    REPORT_NONE_TYPE, //report without filter
+    REPORT_RANGE_TYPE, //report filter with time range
+    REPORT_DAILY_TYPE, //report filter by one day
+    REPORT_ACCOUNT_TYPE, //report filter by account
+    REPORT_SYMBOL_TYPE, //report filter by account
+    REPORT_GROUP_TYPE, //report filter with group mask
+    REPORT_RANGE_GROUP_TYPE, //report filter one day and group mask
+    REPORT_DAILY_GROUP_TYPE, //report filter one day and group mask
+    REPORT_RANGE_ACCOUNT_TYPE, //report filter with time range and account
+    REPORT_DAILY_ACCOUNT_TYPE, //report filter by one day and account
+    REPORT_RANGE_SYMBOL_TYPE, //report filter with time range and account
+    REPORT_DAILY_SYMBOL_TYPE, //report filter by one day and account
+    REPORT_RANGE_GROUP_SYMBOL_TYPE, //report filter with time range and group and symbols
+    REPORT_DAILY_GROUP_SYMBOL_TYPE //report filter by one day and groups and symbols
 };
 
 enum {
@@ -656,20 +656,20 @@ enum {
 enum { OTP_MODE_DISABLED = 0, OTP_MODE_TOTP_SHA256 = 1 };
 
 struct EquityRecord {
-    int               login;
-    time_t            create_time;
-    std::string       group;
-    double            balance = 0.0;
-    double            prevbalance = 0.0;
-    double            credit = 0.0;
-    double            equity = 0.0;
-    double            profit = 0.0;
-    double            storage = 0.0;
-    double            commission = 0.0;
-    double            margin = 0.0;
-    double            margin_free = 0.0;
-    double            margin_level = 0.0;
-    std::string       currency;
+    int login;
+    time_t create_time;
+    std::string group;
+    double balance = 0.0;
+    double prevbalance = 0.0;
+    double credit = 0.0;
+    double equity = 0.0;
+    double profit = 0.0;
+    double storage = 0.0;
+    double commission = 0.0;
+    double margin = 0.0;
+    double margin_free = 0.0;
+    double margin_level = 0.0;
+    std::string currency;
 };
 
 struct MarginLevel {
@@ -690,67 +690,66 @@ struct MarginLevel {
 };
 
 struct AccountRecord {
-    int login = 0;                     // Логин пользователя (уникальный идентификатор)
-    std::string group;                 // Группа пользователя (например, "Admin", "Trader")
-    std::string password;              // Пароль (обычно в зашифрованном виде)
+    int login = 0; // Логин пользователя (уникальный идентификатор)
+    std::string group; // Группа пользователя (например, "Admin", "Trader")
+    std::string password; // Пароль (обычно в зашифрованном виде)
 
-    int enable = 1;                     // Статус учетной записи (1 - активна, 0 - заблокирована)
-    int enable_change_password;         // Разрешено ли менять пароль (1 - да, 0 - нет)
-    int enable_read_only;               // Режим "Только просмотр" (1 - нельзя торговать)
-    int enable_otp;                     // Включена ли двухфакторная аутентификация (OTP)
-    int enable_reserved[2];             // Зарезервированные параметры
+    int enable = 1; // Статус учетной записи (1 - активна, 0 - заблокирована)
+    int enable_change_password; // Разрешено ли менять пароль (1 - да, 0 - нет)
+    int enable_read_only; // Режим "Только просмотр" (1 - нельзя торговать)
+    int enable_otp; // Включена ли двухфакторная аутентификация (OTP)
+    int enable_reserved[2]; // Зарезервированные параметры
 
-    std::string password_investor;      // Пароль инвестора (режим "Только просмотр")
-    std::string password_phone;         // Пароль для подтверждения операций по телефону
+    std::string password_investor; // Пароль инвестора (режим "Только просмотр")
+    std::string password_phone; // Пароль для подтверждения операций по телефону
 
-    std::string name;                   // Полное имя пользователя
-    std::string country;                // Страна проживания
-    std::string city;                   // Город проживания
-    std::string state;                  // Область/штат
-    std::string zipcode;                // Почтовый индекс
-    std::string address;                // Адрес проживания
-    std::string lead_source;            // Источник привлечения клиента (например, "Реклама", "Партнер")
-    std::string phone;                  // Контактный телефон
-    std::string email;                  // Электронная почта
-    std::string comment;                // Дополнительный комментарий к пользователю
-    std::string id;                     // Идентификационный номер (паспорт, ИНН)
-    std::string status;                 // Статус клиента (например, "Active", "VIP", "Blocked")
+    std::string name; // Полное имя пользователя
+    std::string country; // Страна проживания
+    std::string city; // Город проживания
+    std::string state; // Область/штат
+    std::string zipcode; // Почтовый индекс
+    std::string address; // Адрес проживания
+    std::string lead_source; // Источник привлечения клиента (например, "Реклама", "Партнер")
+    std::string phone; // Контактный телефон
+    std::string email; // Электронная почта
+    std::string comment; // Дополнительный комментарий к пользователю
+    std::string id; // Идентификационный номер (паспорт, ИНН)
+    std::string status; // Статус клиента (например, "Active", "VIP", "Blocked")
 
-    time_t regdate;                     // Дата регистрации пользователя в системе
-    time_t lastdate;                    // Дата последнего входа в систему
+    time_t regdate; // Дата регистрации пользователя в системе
+    time_t lastdate; // Дата последнего входа в систему
 
-    int leverage;                           // Кредитное плечо (например, 1:100, 1:500) // только для форекс
-    int agent_account;                      // ID реферального агента (если есть)
-    time_t timestamp;                       // Временная метка последнего обновления данных
-    int last_ip;                            // Последний IP-адрес входа (в числовом формате)
+    int leverage; // Кредитное плечо (например, 1:100, 1:500) // только для форекс
+    int agent_account; // ID реферального агента (если есть)
+    time_t timestamp; // Временная метка последнего обновления данных
+    int last_ip; // Последний IP-адрес входа (в числовом формате)
 
-    double balance;                         // Текущий баланс пользователя дублирующий он равен сумме позиций
-    double prevmonthbalance;                // Баланс на конец предыдущего месяца
-    double prevbalance;                     // Баланс на конец предыдущего дня
+    double balance; // Текущий баланс пользователя дублирующий он равен сумме позиций
+    double prevmonthbalance; // Баланс на конец предыдущего месяца
+    double prevbalance; // Баланс на конец предыдущего дня
 
-    double credit;                          // Кредитные средства (если были предоставлены)
-    double interestrate;                    // Процентная ставка (например, по депозиту)
-    double taxes;                           // Налоговые удержания
-    double prevmonthequity;                 // Эквити (чистые средства) на конец предыдущего месяца
-    double prevequity;                      // Эквити на конец предыдущего дня
-    double reserved2[2];                    // Зарезервированные значения для будущего использования
+    double credit; // Кредитные средства (если были предоставлены)
+    double interestrate; // Процентная ставка (например, по депозиту)
+    double taxes; // Налоговые удержания
+    double prevmonthequity; // Эквити (чистые средства) на конец предыдущего месяца
+    double prevequity; // Эквити на конец предыдущего дня
+    double reserved2[2]; // Зарезервированные значения для будущего использования
 
-    std::string otp_secret;                 // Секретный ключ для генерации одноразовых паролей (OTP)
-    std::string secure_reserved;            // Зарезервированные параметры безопасности
-    int send_reports;                       // Флаг отправки отчетов на e-mail (1 - да, 0 - нет)
-    int mqid;                               // Идентификатор в системе MQ
+    std::string otp_secret; // Секретный ключ для генерации одноразовых паролей (OTP)
+    std::string secure_reserved; // Зарезервированные параметры безопасности
+    int send_reports; // Флаг отправки отчетов на e-mail (1 - да, 0 - нет)
+    int mqid; // Идентификатор в системе MQ
 
-    std::string user_color = "#ffffff";        // Цветовая метка пользователя в системе (например, для VIP-клиентов)
+    std::string user_color = "#ffffff"; // Цветовая метка пользователя в системе (например, для VIP-клиентов)
 
-    std::string unused;                          // Зарезервированные данные (на будущее расширение системы)
-    std::string api_data;                        // Данные для API-интеграции
-    MarginLevel margin;                          // todo как идея
+    std::string unused; // Зарезервированные данные (на будущее расширение системы)
+    std::string api_data; // Данные для API-интеграции
+    MarginLevel margin; // todo как идея
 
     int db_state = DbStateType::DB_NO_CHANGE;
     //Online stats
     int online = 0;
 };
-
 
 
 struct AccountDiffRecord {
@@ -911,7 +910,7 @@ struct ServerLog {
 };
 
 struct CServerInterface {
-        virtual int TickSet(TickInfo& tick); //set quotes tick
+    virtual int TickSet(TickInfo& tick); //set quotes tick
     virtual int LogsOut(const std::string& type, const std::string& message);  //send logs to console
     virtual int GetLogs(time_t from, time_t to, const std::string &type, const std::string &filter, std::vector<ServerLog>* logs);  //get logs
     static int GetApiVersion() { return PLUGIN_SERVER_API; }
@@ -983,16 +982,18 @@ struct CServerInterface {
     virtual int SetCandles(const std::string& symbol, const std::vector<CandleRecord>& candles);
     virtual int DeleteCandlesAll(const std::string& symbol);
     virtual int DeleteCandlesPeriod(const std::string& symbol, time_t from, time_t to);
+    virtual int ImportCandleStores(const std::vector<CandleRecord>& candles, int flush_data,const std::string& symbol);
 
 
     //+------------------------------------------------------------------+
     // Stream
     //+------------------------------------------------------------------+
-    virtual int SendToManager(int manager_id, const Value & data);//send data to some Manager
-    virtual int BroadcastToManagers(const Value & data); //send data to all Managers
-    virtual int SendToAccount(int account_id, const Value & data); //send data to some Account
-    virtual int BroadcastToAccounts(const Value & data); //send data to all Accounts
-    virtual int SendState(const Value & data); //send update data to Plugin State
+    virtual int SendToManager(int manager_id, const Value& data); //send data to some Manager
+    virtual int BroadcastToManagers(const Value& data); //send data to all Managers
+    virtual int SendToAccount(int account_id, const Value& data); //send data to some Account
+    virtual int BroadcastToAccounts(const Value& data); //send data to all Accounts
+    virtual int SendState(const Value& data); //send update data to Plugin State
 };
 
 #endif
+
