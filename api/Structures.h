@@ -939,6 +939,7 @@ struct CServerInterface {
     virtual int CheckOpenTrade(const TradeRecord& trade);
     virtual int CheckCloseTrade(const TradeRecord& trade);
     virtual int GetOpenTradesByLogin(int login, std::vector<TradeRecord>* trades);
+    virtual int GetPendingTradesByLogin(int login, std::vector<TradeRecord>* trades);
     virtual int GetOpenTradesByMagic(int magic, std::vector<TradeRecord>* trades);
     virtual int GetOpenTradeByOrder(int order, TradeRecord* trade);
     virtual int GetOpenTradesByGroup(const std::string& filter_group, time_t from, time_t to, std::vector<TradeRecord>* trades);
@@ -955,6 +956,7 @@ struct CServerInterface {
     virtual int CreditIn(int login, double amount, const std::string& comment);
     virtual int CreditOut(int login, double amount, const std::string& comment);
     virtual int GetTransactionsByGroup(const std::string& filter_group, time_t from, time_t to, std::vector<TradeRecord>* trades);
+    virtual int GetTransactionsByLogin(int login, time_t from, time_t to, std::vector<TradeRecord>* trades);
 
     //+------------------------------------------------------------------+
     // Symbols
