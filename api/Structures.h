@@ -524,81 +524,101 @@ struct ConSessions {
 };
 
 struct SymbolRecord {
-    std::string symbol;
-    std::string description;
-    std::string source;
-    std::string currency;
-    int sec_index = 0;
-    int digits = 0;
-    int trade = 0;
-    int sym_index = 0;
-    int sort_index = 0;
+    //--- Основные параметры
+    std::string symbol;               // Название символа
+    std::string description;          // Описание символа
+    std::string source;               // Синоним символа
+    int feeder = 0;                   // Индекс привязанного фидера
+    std::string currency;             // Валюта расчетов baseCurrency релевантно только для FOREX
+    int sec_index = 0;                // Группа символов
+    int digits = 0;                   // Точность (число знаков после запятой)
+    int trade = 0;                    // Режим торговли { TRADE_NO, TRADE_CLOSE, TRADE_FULL }
+    int sym_index = 0;                // Индекс нужен для уникальности
+    int sort_index = 0;               // Индекс нужен для сортировки
 
-    std::string background_color = "#ffffff";
-    int count = 0;
-    int count_original = 0;
+    //--- Внешние настройки
+    std::string background_color = "#ffffff"; // Цвет фона
+    int count = 0;                            // Индекс символа
+    int count_original = 0;                   // Индекс в Market Watch
 
-    ConSessions sessions[7];
+    //--- Сессии
+    ConSessions sessions[7];                 // Конфигурация сессий
 
-    int profit_mode = 0;
-    int profit_reserved = 0;
+    //--- Профит и комиссия
+    int profit_mode = 0;                     // Режим расчета прибыли
+    int profit_reserved = 0;                 // Зарезервировано
 
-    int filter = 0;
-    int filter_counter = 0;
-    double filter_limit = 0.0;
-    int filter_smoothing = 0;
-    float filter_reserved = 0.0f;
-    int logging = 0;
+    //--- Фильтрация котировок
+    int filter = 0;                          // Значение фильтра
+    int filter_counter = 1;                  // количество котировок вне условия в фильтрации после которой они считаются нормой
+    double filter_limit = 0.0;               // Максимально допустимое отклонение от последней котировки
+    int filter_smoothing = 0;                // Сглаживание фильтрации
+    float filter_reserved = 0.0f;            // Зарезервировано
+    int logging = 0;                         // Включить логирование котировок
 
-    int spread = 0;
-    int spread_balance = 0;
+    //--- Спред
+    int spread = 0;                          // Спред
+    int spread_balance = 0;                  // Баланс спреда
 
-    int exemode = 0;
-    int swap_enable = 0;
-    int swap_type = 0;
-    double swap_long = 0.0, swap_short = 0.0;
-    int swap_rollover3days = 0;
+    //--- Свопы
+    int exemode = 0;                         // Режим исполнения
+    int swap_enable = 0;                     // Включение свопов
+    int swap_type = 0;                       // Тип свопов
+    double swap_long = 0.0, swap_short = 0.0; // Свопы для длинных и коротких позиций
+    int swap_rollover3days = 0;              // Тройной своп (день недели)
+    int swap_daily = 0;                      // Начислять своп каждый день без triple rollover
 
-    double contract_size = 0.0;
-    double tick_value = 0.0;
-    double tick_size = 0.0;
-    int stops_level = 0;
-    int gtc_pendings = 0;
+    double contract_size = 0.0;              // Размер контракта
+    double tick_value = 0.0;                 // Стоимость одного тика
+    double tick_size = 0.0;                  // Размер одного тика
+    int stops_level = 0;                     // Минимальное отклонение от текущей цены
+    int gtc_pendings = 0;                    // GTC режим
 
-    int margin_mode = 0;
-    double margin_initial = 0.0;
-    double margin_maintenance = 0.0;
-    double margin_hedged = 0.0;
-    double margin_divider = 0.0;
+    //--- Маржинальные параметры
+    int margin_mode = 0;                     // Режим расчета маржи
+    double margin_initial = 0.0;             // Начальная маржа
+    double margin_maintenance = 0.0;         // Поддерживающая маржа
+    double margin_hedged = 0.0;              // Маржа для хеджированных позиций
+    double margin_divider = 0.0;             // Делитель маржи
 
-    double point = 0.0;
-    double multiply = 0.0;
-    double bid_tickvalue = 0.0;
-    double ask_tickvalue = 0.0;
+    //--- Внутренние параметры
+    double point = 0.0;                      // Размер пункта
+    double multiply = 0.0;                   // Коэффициент умножения
+    double bid_tickvalue = 0.0;              // Стоимость тика по Bid
+    double ask_tickvalue = 0.0;              // Стоимость тика по Ask
 
-    time_t lasttime = 0;
-    double bid = 0.0, ask = 0.0;
+    //--- Реалтайм котировки
+    time_t tick_time = 0;                    // Время последнего тика
+    double bid = 0.0, ask = 0.0;             // bid, ask
 
-    int long_only = 0;
-    int instant_max_volume = 0;
+    //--- Ограничения
+    int long_only = 0;                       // Разрешены только длинные позиции
+    int instant_max_volume = 0;             // Максимальный объем для Instant Execution
 
-    int realtime = 1;
-    time_t starting = 0;
-    time_t expiration = 0;
+    //--- Сессии
+    int           realtime = 1;                        // allow real time quotes
+    time_t        starting = 0;                        // trades starting date (UNIX time)
+    time_t        expiration = 0;                      // trades end date      (UNIX time)
 
-    std::string quote_currency;
-    std::string margin_currency;
-    int freeze_level = 0;
-    int margin_hedged_strong = 0;
-    time_t value_date = 0;
-    int quotes_delay = 0;
+    //--- Дополнительные параметры
+    std::string quote_currency;             // Валюта расчетов quoteCurrency
+    std::string margin_currency;            // Валюта маржи
+    int freeze_level = 0;                   // Уровень заморозки
+    int margin_hedged_strong = 0;           // Строгий режим маржи
+    time_t value_date = 0;                  // Дата расчета стоимости
+    int quotes_delay = 0;                   // Задержка котировок
 
-    int swap_openprice = 0;
-    int swap_variation_margin = 0;
+    int swap_openprice = 0;                 // Использовать цену открытия при расчете свопов
+    int swap_variation_margin = 0;          // Вариационная маржа на ролловер
 
-    int unused[21]{};
+    //--- Зарезервированные параметры
+    int unused[21]{};                        // Зарезервировано
 
-    int db_state = DbStateType::DB_NO_CHANGE;
+    //--- Sysstem параметры
+    int db_state = 0;
+
+    //--- Additionals
+
 };
 
 struct SymbolAdditionalRecord {
