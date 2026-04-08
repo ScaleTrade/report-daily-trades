@@ -397,48 +397,55 @@ enum {
 };
 
 struct TradeRecord {
-    int order = 0;
-    int login;
-    std::string symbol;
-    int digits = 2;
-    int cmd;
-    int volume;
+    int         order = 0;             // Уникальный идентификатор ордера (ticket)
+    int         login;                 // Идентификатор владельца счета
+    std::string symbol;                // Символ торгового инструмента (например, "EURUSD")
+    int         digits = 2;            // Количество знаков после запятой в котировке
+    int         cmd;                   // Тип ордера (см. `enum OP_*`)
+    int         volume;                // Объем ордера (лотность) Оно приводится в int min лотность / 100
 
-    time_t open_time;
-    int state;
-    double open_price;
-    double sl, tp;
-    double margin_initial;
-    time_t close_time;
+    time_t      open_time = 0;         // Время открытия ордера (UNIX timestamp)
+    int         state;                 // Текущее состояние ордера (см. `enum TS_*`)
+    double      open_price;            // Цена открытия ордера
+    double      sl = 0.0, tp = 0.0;    // Уровни Stop Loss и Take Profit
+    double      margin_initial;        // Маржа инициализации ордера
+    time_t      close_time = 0;        // Время закрытия ордера (если закрыт)
 
-    int gw_volume;
-    time_t expiration;
-    int reason;
+    //int trailing_stop = 0; Stop Loss to follow the current price if the profit from a position increases.
 
-    std::array<double, 2> conv_rates;
+    int         gw_volume;             // Объем, исполненный через внешний шлюз
+    time_t      expiration;            // Время истечения ордера (для отложенных ордеров)
+    int         reason;                // Причина создания ордера (см. `enum TR_REASON_*`)
 
-    double commission;
-    double prev_commission = 0.0;
-    double commission_agent;
-    double storage;
-    double prev_storage = 0.0;
-    double profit;
-    double prev_profit = 0.0;
+    std::array<double, 2> conv_rates; // Курсы конвертации валюты прибыли в валюту депозита:
+                                      // conv_rates[0] - на момент открытия
+                                      // conv_rates[1] - на момент закрытия
 
-    double close_price;
-    double taxes;
+    double      commission;            // Комиссия за сделку
+    double      prev_commission = 0.0; // Предыдущая комиссия за сделку
+    double      commission_agent;      // Комиссия агента (IB)
+    double      storage;               // Своп (overnight fee)
+    double      prev_storage = 0.0;    // Предыдущий своп (overnight fee)
+    double      profit;                // Итоговая прибыль/убыток
+    double      prev_profit = 0.0;     // предыдущая итоговая прибыль/убыток
 
-    int magic;
-    std::string comment;
-    int gw_order;
-    int activation;
-    double gw_open_price;
-    double gw_close_price;
-    double margin_rate;
+    //time_t last_accrual_time;         // предыдущие начисление свопа
+    //time_t next_rollover_time;        // следующие начисление свопа
+
+    double      close_price;           // Цена закрытия ордера
+    double      taxes;                 // Налоги
+
+    int         magic;                 // Магический номер (идентификатор советника)
+    std::string comment;               // Комментарий к ордеру
+    int         gw_order;              // Номер ордера во внешнем шлюзе
+    int         activation;            // Тип активации ордера (см. `enum ACTIVATION_*`)
+    double      gw_open_price;         // Цена открытия во внешнем шлюзе
+    double      gw_close_price;        // Цена закрытия во внешнем шлюзе
+    double      margin_rate;           // Коэффициент маржи (конвертация валюты маржи в валюту депозита)
     std::string api_data;
-    time_t timestamp;
+    time_t      last_swap_time;             // Временная метка последнего изменения
 
-    int db_state = DbStateType::DB_NO_CHANGE;
+    int db_state = 0;
 };
 
 struct TradeDiffRecord {
@@ -524,7 +531,6 @@ struct ConSessions {
 };
 
 struct SymbolRecord {
-    //--- Основные параметры
     std::string symbol;               // Название символа
     std::string description;          // Описание символа
     std::string source;               // Синоним символа
@@ -536,19 +542,15 @@ struct SymbolRecord {
     int sym_index = 0;                // Индекс нужен для уникальности
     int sort_index = 0;               // Индекс нужен для сортировки
 
-    //--- Внешние настройки
     std::string background_color = "#ffffff"; // Цвет фона
     int count = 0;                            // Индекс символа
     int count_original = 0;                   // Индекс в Market Watch
 
-    //--- Сессии
     ConSessions sessions[7];                 // Конфигурация сессий
 
-    //--- Профит и комиссия
     int profit_mode = 0;                     // Режим расчета прибыли
     int profit_reserved = 0;                 // Зарезервировано
 
-    //--- Фильтрация котировок
     int filter = 0;                          // Значение фильтра
     int filter_counter = 1;                  // количество котировок вне условия в фильтрации после которой они считаются нормой
     double filter_limit = 0.0;               // Максимально допустимое отклонение от последней котировки
@@ -556,11 +558,9 @@ struct SymbolRecord {
     float filter_reserved = 0.0f;            // Зарезервировано
     int logging = 0;                         // Включить логирование котировок
 
-    //--- Спред
     int spread = 0;                          // Спред
     int spread_balance = 0;                  // Баланс спреда
 
-    //--- Свопы
     int exemode = 0;                         // Режим исполнения
     int swap_enable = 0;                     // Включение свопов
     int swap_type = 0;                       // Тип свопов
@@ -574,33 +574,27 @@ struct SymbolRecord {
     int stops_level = 0;                     // Минимальное отклонение от текущей цены
     int gtc_pendings = 0;                    // GTC режим
 
-    //--- Маржинальные параметры
     int margin_mode = 0;                     // Режим расчета маржи
     double margin_initial = 0.0;             // Начальная маржа
     double margin_maintenance = 0.0;         // Поддерживающая маржа
     double margin_hedged = 0.0;              // Маржа для хеджированных позиций
     double margin_divider = 0.0;             // Делитель маржи
 
-    //--- Внутренние параметры
     double point = 0.0;                      // Размер пункта
     double multiply = 0.0;                   // Коэффициент умножения
     double bid_tickvalue = 0.0;              // Стоимость тика по Bid
     double ask_tickvalue = 0.0;              // Стоимость тика по Ask
 
-    //--- Реалтайм котировки
     time_t tick_time = 0;                    // Время последнего тика
     double bid = 0.0, ask = 0.0;             // bid, ask
 
-    //--- Ограничения
     int long_only = 0;                       // Разрешены только длинные позиции
     int instant_max_volume = 0;             // Максимальный объем для Instant Execution
 
-    //--- Сессии
     int           realtime = 1;                        // allow real time quotes
     time_t        starting = 0;                        // trades starting date (UNIX time)
     time_t        expiration = 0;                      // trades end date      (UNIX time)
 
-    //--- Дополнительные параметры
     std::string quote_currency;             // Валюта расчетов quoteCurrency
     std::string margin_currency;            // Валюта маржи
     int freeze_level = 0;                   // Уровень заморозки
@@ -611,14 +605,9 @@ struct SymbolRecord {
     int swap_openprice = 0;                 // Использовать цену открытия при расчете свопов
     int swap_variation_margin = 0;          // Вариационная маржа на ролловер
 
-    //--- Зарезервированные параметры
     int unused[21]{};                        // Зарезервировано
 
-    //--- Sysstem параметры
     int db_state = 0;
-
-    //--- Additionals
-
 };
 
 struct SymbolAdditionalRecord {
