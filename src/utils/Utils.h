@@ -44,4 +44,6 @@ namespace utils {
     std::vector<TradeRecord> CreateTopProfitOrdersVector(const std::vector<TradeRecord>& trades);
 
     std::vector<TradeRecord> CreateTopLossOrdersVector(const std::vector<TradeRecord>& trades);
+
+    std::string ConvertCmdToString(const int cmd);
 } // namespace utils
