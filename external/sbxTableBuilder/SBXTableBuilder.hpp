@@ -133,6 +133,8 @@ public:
 
     void EnableTotal(const bool& enabled) { _is_total_row_enabled = enabled; }
 
+    void SetLimit(int limit) { _limit = limit; }
+
     void SetTotalDataTitle(const std::string& title) { _total_data_title = title; }
 
     void SetTotalData(const JSONArray& total_data) { _total_data = total_data; }
@@ -148,6 +150,7 @@ public:
         table_props["showExportBtn"] = _is_export_button_enabled;
         table_props["showTotal"] = _is_total_row_enabled;
         table_props["totalDataTitle"] = _total_data_title;
+        table_props["limit"] = static_cast<double>(_limit);
 
         if (!_total_data.empty()) {
             table_props["totalData"] = _total_data;
@@ -190,6 +193,7 @@ private:
     bool _is_bookmarks_button_enabled = true;
     bool _is_export_button_enabled = true;
     bool _is_total_row_enabled = false;
+    int _limit = 20;
     std::string _total_data_title;
     JSONArray _total_data;
 
