@@ -946,7 +946,6 @@ struct ServerLog {
 };
 
 struct CServerInterface {
-struct CServerInterface {
     virtual int TickSet(TickInfo& tick); //set quotes tick
     virtual int LogsOut(const std::string& type, const std::string& message);  //send logs to console
     virtual int GetLogs(time_t from, time_t to, const std::string &type, const std::string &filter, std::vector<ServerLog>* logs);  //get logs
