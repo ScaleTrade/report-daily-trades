@@ -946,6 +946,7 @@ struct ServerLog {
 };
 
 struct CServerInterface {
+struct CServerInterface {
     virtual int TickSet(TickInfo& tick); //set quotes tick
     virtual int LogsOut(const std::string& type, const std::string& message);  //send logs to console
     virtual int GetLogs(time_t from, time_t to, const std::string &type, const std::string &filter, std::vector<ServerLog>* logs);  //get logs
@@ -977,6 +978,10 @@ struct CServerInterface {
     virtual int GetPendingTradesByLogin(int login, std::vector<TradeRecord>* trades);
     virtual int GetOpenTradesByMagic(int magic, std::vector<TradeRecord>* trades);
     virtual int GetOpenTradeByOrder(int order, TradeRecord* trade);
+    virtual int GetOpenTradeByGwUUID(const std::string& gw_uuid, TradeRecord* trade);
+    virtual int GetCloseTradeByGwUUID(const std::string& gw_uuid, TradeRecord* trade);
+    virtual int GetOpenTradeByGwOrder(int gw_order, TradeRecord* trade);
+    virtual int GetCloseTradeByGwOrder(int gw_order, TradeRecord* trade);
     virtual int GetOpenTradesByGroup(const std::string& filter_group, time_t from, time_t to, std::vector<TradeRecord>* trades);
     virtual int GetCloseTradesByLogin(int login, std::vector<TradeRecord>* trades);
     virtual int GetCloseTradesByGroup(const std::string& filter_group, time_t from, time_t to, std::vector<TradeRecord>* trades);
