@@ -2194,7 +2194,7 @@ typedef GenericValue<UTF8<> > Value;
 //! A document for parsing JSON text as DOM.
 /*!
     \note implements Handler concept
-    \tparam Encoding Encoding for both parsing and string repository.
+    \tparam Encoding Encoding for both parsing and string storage.
     \tparam Allocator Allocator for allocating memory for the DOM
     \tparam StackAllocator Allocator for allocating memory for stack during parsing.
     \warning Although GenericDocument inherits from GenericValue, the API does \b not provide any virtual functions, especially no virtual destructor.  To avoid memory leaks, do not \c delete a GenericDocument object via a pointer to a GenericValue.

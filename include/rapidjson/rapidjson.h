@@ -42,7 +42,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 // RAPIDJSON_VERSION_STRING
 //
-// ALWAYS synchronize the following 3 macros with corresponding variables in /CMakeLists_v1.txt.
+// ALWAYS synchronize the following 3 macros with corresponding variables in /CMakeLists.txt.
 //
 
 //!@cond RAPIDJSON_HIDDEN_FROM_DOXYGEN

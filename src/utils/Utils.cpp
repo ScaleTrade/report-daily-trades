@@ -108,8 +108,8 @@ namespace utils {
         return std::trunc(value * factor) / factor;
     }
 
-    std::string GetGroupCurrencyByName(const std::vector<GroupRecord>& group_vector,
-                                       const std::string&              group_name) {
+    std::string GetGroupCurrencyByName(const std::vector<ReportGroupRecord>& group_vector,
+                                       const std::string&                    group_name) {
         for (const auto& group : group_vector) {
             if (group.group == group_name) {
                 return group.currency;
@@ -176,7 +176,7 @@ namespace utils {
         return chart_data;
     }
 
-    JSONArray CreateTradesCountChartData(const std::vector<TradeRecord>& trades) {
+    JSONArray CreateTradesCountChartData(const std::vector<ReportTradeRecord>& trades) {
         std::map<std::string, TradesCountDataPoint> daily_data;
 
         for (const auto& trade : trades) {
@@ -252,26 +252,30 @@ namespace utils {
         return chart_data;
     }
 
-    std::vector<TradeRecord> CreateTopProfitOrdersVector(const std::vector<TradeRecord>& trades) {
-        std::vector<TradeRecord> result = trades;
-        size_t                   k      = std::min(result.size(), size_t(10));
-        std::partial_sort(
-            result.begin(),
-            result.begin() + k,
-            result.end(),
-            [](const TradeRecord& a, const TradeRecord& b) { return a.profit > b.profit; });
+    std::vector<ReportTradeRecord>
+    CreateTopProfitOrdersVector(const std::vector<ReportTradeRecord>& trades) {
+        std::vector<ReportTradeRecord> result = trades;
+        size_t                         k      = std::min(result.size(), size_t(10));
+        std::partial_sort(result.begin(),
+                          result.begin() + k,
+                          result.end(),
+                          [](const ReportTradeRecord& a, const ReportTradeRecord& b) {
+                              return a.profit > b.profit;
+                          });
         result.resize(k);
         return result;
     }
 
-    std::vector<TradeRecord> CreateTopLossOrdersVector(const std::vector<TradeRecord>& trades) {
-        std::vector<TradeRecord> result = trades;
-        size_t                   k      = std::min(result.size(), size_t(10));
-        std::partial_sort(
-            result.begin(),
-            result.begin() + k,
-            result.end(),
-            [](const TradeRecord& a, const TradeRecord& b) { return a.profit < b.profit; });
+    std::vector<ReportTradeRecord>
+    CreateTopLossOrdersVector(const std::vector<ReportTradeRecord>& trades) {
+        std::vector<ReportTradeRecord> result = trades;
+        size_t                         k      = std::min(result.size(), size_t(10));
+        std::partial_sort(result.begin(),
+                          result.begin() + k,
+                          result.end(),
+                          [](const ReportTradeRecord& a, const ReportTradeRecord& b) {
+                              return a.profit < b.profit;
+                          });
         result.resize(k);
         return result;
     }

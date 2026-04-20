@@ -5,7 +5,7 @@
 extern "C" void AboutReport(rapidjson::Value&                   request,
                             rapidjson::Value&                   response,
                             rapidjson::Document::AllocatorType& allocator,
-                            CServerInterface*                   server) {
+                            ReportServerInterface*              server) {
     response.AddMember("version", 1, allocator);
     response.AddMember("name", Value().SetString("Daily Trades report", allocator), allocator);
     response.AddMember(
@@ -15,7 +15,8 @@ extern "C" void AboutReport(rapidjson::Value&                   request,
                           "performed deals and open positions.",
                           allocator),
         allocator);
-    response.AddMember("type", REPORT_DAILY_GROUP_TYPE, allocator);
+    response.AddMember("type", static_cast<int>(ReportType::DailyGroup), allocator);
+    response.AddMember("key", Value().SetString("DAILY_TRADES_REPORT", allocator), allocator);
 }
 
 extern "C" void DestroyReport() {}
@@ -23,7 +24,7 @@ extern "C" void DestroyReport() {}
 extern "C" void CreateReport(rapidjson::Value&                   request,
                              rapidjson::Value&                   response,
                              rapidjson::Document::AllocatorType& allocator,
-                             CServerInterface*                   server) {
+                             ReportServerInterface*              server) {
     std::string group_mask;
     int         from;
     int         to;
@@ -39,9 +40,9 @@ extern "C" void CreateReport(rapidjson::Value&                   request,
         to = request["to"].GetInt();
     }
 
-    std::vector<TradeRecord>       close_trades_vector;
-    std::vector<TradeRecord>       open_trades_vector;
-    std::vector<GroupRecord>       groups_vector;
+    std::vector<ReportTradeRecord> close_trades_vector;
+    std::vector<ReportTradeRecord> open_trades_vector;
+    std::vector<ReportGroupRecord> groups_vector;
     std::vector<UsdConvertedTrade> usd_converted_close_trades_vector;
     std::vector<UsdConvertedTrade> usd_converted_open_trades_vector;
 
@@ -51,8 +52,8 @@ extern "C" void CreateReport(rapidjson::Value&                   request,
         server->GetAllGroups(&groups_vector);
 
         for (auto& close_trade : close_trades_vector) {
-            AccountRecord account;
-            double        multiplier;
+            ReportAccountRecord account;
+            double              multiplier;
 
             server->GetAccountByLogin(close_trade.login, &account);
 
@@ -66,7 +67,7 @@ extern "C" void CreateReport(rapidjson::Value&                   request,
                         usd_profit = close_trade.profit;
                     } else {
                         server->CalculateConvertRateByCurrency(
-                            group.currency, "USD", close_trade.cmd, &multiplier);
+                            group.currency, "USD", static_cast<int>(close_trade.cmd), &multiplier);
                         usd_profit = close_trade.profit * multiplier;
                     }
 
@@ -79,8 +80,8 @@ extern "C" void CreateReport(rapidjson::Value&                   request,
         }
 
         for (const auto& open_trade : open_trades_vector) {
-            AccountRecord account;
-            double        multiplier;
+            ReportAccountRecord account;
+            double              multiplier;
 
             server->GetAccountByLogin(open_trade.login, &account);
 
@@ -94,7 +95,7 @@ extern "C" void CreateReport(rapidjson::Value&                   request,
                         usd_profit = open_trade.profit;
                     } else {
                         server->CalculateConvertRateByCurrency(
-                            group.currency, "USD", open_trade.cmd, &multiplier);
+                            group.currency, "USD", static_cast<int>(open_trade.cmd), &multiplier);
                         usd_profit = open_trade.profit * multiplier;
                     }
 
@@ -163,7 +164,7 @@ extern "C" void CreateReport(rapidjson::Value&                   request,
     }
 
     // Top close profit orders table
-    std::vector<TradeRecord> top_close_profit_orders_vector =
+    std::vector<ReportTradeRecord> top_close_profit_orders_vector =
         utils::CreateTopProfitOrdersVector(close_trades_vector);
     TableBuilder top_close_profit_orders_table_builder("TopCloseProfitOrdersTable");
 
@@ -189,7 +190,7 @@ extern "C" void CreateReport(rapidjson::Value&                   request,
     top_close_profit_orders_table_builder.AddColumn({"profit", "AMOUNT", 10, search_filter});
 
     for (const auto& trade : top_close_profit_orders_vector) {
-        AccountRecord account;
+        ReportAccountRecord account;
 
         try {
             server->GetAccountByLogin(trade.login, &account);
@@ -203,7 +204,7 @@ extern "C" void CreateReport(rapidjson::Value&                   request,
             account.name,
             trade.symbol,
             account.group,
-            trade.cmd == 0 ? "buy" : "sell",
+            utils::ConvertCmdToString(static_cast<int>(trade.cmd)),
             utils::TruncateDouble(trade.volume / 100.0, 2),
             utils::TruncateDouble(trade.close_price, 2),
             utils::TruncateDouble(trade.storage, 2),
@@ -216,7 +217,7 @@ extern "C" void CreateReport(rapidjson::Value&                   request,
     const Node top_close_profit_orders_table_node = Table({}, top_close_profit_orders_table_props);
 
     // Top close loss orders table
-    std::vector<TradeRecord> top_close_loss_orders_vector =
+    std::vector<ReportTradeRecord> top_close_loss_orders_vector =
         utils::CreateTopLossOrdersVector(close_trades_vector);
     TableBuilder top_close_loss_orders_table_builder("TopCloseLossOrdersTable");
 
@@ -241,7 +242,7 @@ extern "C" void CreateReport(rapidjson::Value&                   request,
     top_close_loss_orders_table_builder.AddColumn({"profit", "AMOUNT", 10, search_filter});
 
     for (const auto& trade : top_close_loss_orders_vector) {
-        AccountRecord account;
+        ReportAccountRecord account;
 
         try {
             server->GetAccountByLogin(trade.login, &account);
@@ -255,7 +256,7 @@ extern "C" void CreateReport(rapidjson::Value&                   request,
             account.name,
             trade.symbol,
             account.group,
-            trade.cmd == 0 ? "buy" : "sell",
+            utils::ConvertCmdToString(static_cast<int>(trade.cmd)),
             utils::TruncateDouble(trade.volume / 100.0, 2),
             utils::TruncateDouble(trade.close_price, 2),
             utils::TruncateDouble(trade.storage, 2),
@@ -289,7 +290,7 @@ extern "C" void CreateReport(rapidjson::Value&                   request,
                             props({{"width", "100%"}, {"height", 300.0}}));
 
     // Top open profit orders table
-    std::vector<TradeRecord> top_open_profit_orders_vector =
+    std::vector<ReportTradeRecord> top_open_profit_orders_vector =
         utils::CreateTopProfitOrdersVector(open_trades_vector);
     TableBuilder top_open_profit_orders_table_builder("TopOpenProfitOrdersTable");
 
@@ -314,7 +315,7 @@ extern "C" void CreateReport(rapidjson::Value&                   request,
     top_open_profit_orders_table_builder.AddColumn({"profit", "AMOUNT", 10, search_filter});
 
     for (const auto& trade : top_open_profit_orders_vector) {
-        AccountRecord account;
+        ReportAccountRecord account;
 
         try {
             server->GetAccountByLogin(trade.login, &account);
@@ -328,7 +329,7 @@ extern "C" void CreateReport(rapidjson::Value&                   request,
             account.name,
             trade.symbol,
             account.group,
-            trade.cmd == 0 ? "buy" : "sell",
+            utils::ConvertCmdToString(static_cast<int>(trade.cmd)),
             utils::TruncateDouble(trade.volume / 100.0, 2),
             utils::TruncateDouble(trade.close_price, 2),
             utils::TruncateDouble(trade.storage, 2),
@@ -341,7 +342,7 @@ extern "C" void CreateReport(rapidjson::Value&                   request,
     const Node top_open_profit_orders_table_node = Table({}, top_open_profit_orders_table_props);
 
     // Top open loss orders table
-    std::vector<TradeRecord> top_open_loss_orders_vector =
+    std::vector<ReportTradeRecord> top_open_loss_orders_vector =
         utils::CreateTopLossOrdersVector(open_trades_vector);
     TableBuilder top_open_loss_orders_table_builder("TopOpenLossOrdersTable");
 
@@ -365,7 +366,7 @@ extern "C" void CreateReport(rapidjson::Value&                   request,
     top_open_loss_orders_table_builder.AddColumn({"profit", "AMOUNT", 10, search_filter});
 
     for (const auto& trade : top_open_loss_orders_vector) {
-        AccountRecord account;
+        ReportAccountRecord account;
 
         try {
             server->GetAccountByLogin(trade.login, &account);
@@ -379,7 +380,7 @@ extern "C" void CreateReport(rapidjson::Value&                   request,
             account.name,
             trade.symbol,
             account.group,
-            utils::ConvertCmdToString(trade.cmd),
+            utils::ConvertCmdToString(static_cast<int>(trade.cmd)),
             utils::TruncateDouble(trade.volume / 100.0, 2),
             utils::TruncateDouble(trade.close_price, 2),
             utils::TruncateDouble(trade.storage, 2),
