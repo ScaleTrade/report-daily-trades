@@ -135,7 +135,7 @@ namespace utils {
         return oss.str();
     }
 
-    JSONArray CreatePnlChartData(const std::vector<UsdConvertedTrade>& trades) {
+    JSONArray CreatePnlChartData(const std::vector<ConvertedTrade>& trades) {
         std::map<std::string, PnlDataPoint> daily_data;
 
         for (const auto& trade : trades) {
@@ -144,13 +144,13 @@ namespace utils {
             auto& data_point = daily_data[day];
             data_point.date  = day;
 
-            if (trade.usd_profit > 0) {
-                data_point.profit += trade.usd_profit;
+            if (trade.profit > 0) {
+                data_point.profit += trade.profit;
             } else {
-                data_point.loss += trade.usd_profit;
+                data_point.loss += trade.profit;
             }
 
-            data_point.total += trade.usd_profit;
+            data_point.total += trade.profit;
         }
 
         std::vector<PnlDataPoint> data_points;
@@ -216,15 +216,15 @@ namespace utils {
         return chart_data;
     }
 
-    JSONArray CreateOpenPositionsPieChartData(const std::vector<UsdConvertedTrade>& trades) {
+    JSONArray CreateOpenPositionsPieChartData(const std::vector<ConvertedTrade>& trades) {
         double total_profit = 0.0;
         double total_loss   = 0.0;
 
         for (const auto& trade : trades) {
-            if (trade.usd_profit >= 0)
-                total_profit += trade.usd_profit;
+            if (trade.profit >= 0)
+                total_profit += trade.profit;
             else
-                total_loss += -trade.usd_profit; // убыток как положительное число
+                total_loss += -trade.profit; // убыток как положительное число
         }
 
         double total = total_profit + total_loss;

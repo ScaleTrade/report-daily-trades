@@ -29,6 +29,7 @@ extern "C" void CreateReport(rapidjson::Value&                   request,
     int         from;
     int         to;
     int         from_two_weeks_ago;
+
     if (request.HasMember("group") && request["group"].IsString()) {
         group_mask = request["group"].GetString();
     }
@@ -43,8 +44,8 @@ extern "C" void CreateReport(rapidjson::Value&                   request,
     std::vector<ReportTradeRecord> close_trades_vector;
     std::vector<ReportTradeRecord> open_trades_vector;
     std::vector<ReportGroupRecord> groups_vector;
-    std::vector<UsdConvertedTrade> usd_converted_close_trades_vector;
-    std::vector<UsdConvertedTrade> usd_converted_open_trades_vector;
+    std::vector<ConvertedTrade>    usd_converted_close_trades_vector;
+    std::vector<ConvertedTrade>    usd_converted_open_trades_vector;
 
     try {
         server->GetCloseTradesByGroup(group_mask, from_two_weeks_ago, to, &close_trades_vector);
@@ -52,26 +53,36 @@ extern "C" void CreateReport(rapidjson::Value&                   request,
         server->GetAllGroups(&groups_vector);
 
         for (auto& close_trade : close_trades_vector) {
-            ReportAccountRecord account;
-            double              multiplier;
+            ReportAccountRecord account_record;
 
-            server->GetAccountByLogin(close_trade.login, &account);
+            try {
+                server->GetAccountByLogin(close_trade.login, &account_record);
+            } catch (const std::exception& e) {
+                std::cerr << "[DailyTradesReportInterface]: " << e.what() << std::endl;
+            }
 
             for (const auto& group : groups_vector) {
-                if (group.group == account.group) {
-                    double usd_profit = 0.00;
+                if (group.group == account_record.group) {
+                    double multiplier = 1;
+                    double profit     = 0.00;
 
-                    UsdConvertedTrade converted_close_trade;
+                    ConvertedTrade converted_close_trade{};
 
-                    if (group.currency == "USD") {
-                        usd_profit = close_trade.profit;
-                    } else {
-                        server->CalculateConvertRateByCurrency(
-                            group.currency, "USD", static_cast<int>(close_trade.cmd), &multiplier);
-                        usd_profit = close_trade.profit * multiplier;
-                    }
+                    // Conversion disabled
+                    // if (group.currency != "USD") {
+                    //     try {
+                    //         server->CalculateConvertRateByCurrency(
+                    //             group.currency,
+                    //             "USD",
+                    //             static_cast<int>(close_trade.cmd),
+                    //             &multiplier);
+                    //     } catch (const std::exception& e) {
+                    //         std::cerr << "[DailyTradesReportInterface]: " << e.what() <<
+                    //         std::endl;
+                    //     }
+                    // }
 
-                    converted_close_trade.usd_profit = usd_profit;
+                    converted_close_trade.profit     = profit * multiplier;
                     converted_close_trade.close_time = close_trade.close_time;
 
                     usd_converted_close_trades_vector.emplace_back(converted_close_trade);
@@ -80,26 +91,34 @@ extern "C" void CreateReport(rapidjson::Value&                   request,
         }
 
         for (const auto& open_trade : open_trades_vector) {
-            ReportAccountRecord account;
-            double              multiplier;
+            ReportAccountRecord account_record;
 
-            server->GetAccountByLogin(open_trade.login, &account);
+            try {
+                server->GetAccountByLogin(open_trade.login, &account_record);
+            } catch (const std::exception& e) {
+                std::cerr << "[DailyTradesReportInterface]: " << e.what() << std::endl;
+            }
 
             for (const auto& group : groups_vector) {
-                if (group.group == account.group) {
-                    double usd_profit = 0.00;
+                if (group.group == account_record.group) {
+                    double multiplier = 1;
+                    double profit     = 0.00;
 
-                    UsdConvertedTrade converted_close_trade;
+                    ConvertedTrade converted_close_trade{};
 
-                    if (group.currency == "USD") {
-                        usd_profit = open_trade.profit;
-                    } else {
-                        server->CalculateConvertRateByCurrency(
-                            group.currency, "USD", static_cast<int>(open_trade.cmd), &multiplier);
-                        usd_profit = open_trade.profit * multiplier;
-                    }
+                    // if (group.currency != "USD") {
+                    //     try {
+                    //         server->CalculateConvertRateByCurrency(group.currency,
+                    //                                                "USD",
+                    //                                                static_cast<int>(open_trade.cmd),
+                    //                                                &multiplier);
+                    //     } catch (const std::exception& e) {
+                    //         std::cerr << "[DailyTradesReportInterface]: " << e.what() <<
+                    //         std::endl;
+                    //     }
+                    // }
 
-                    converted_close_trade.usd_profit = usd_profit;
+                    converted_close_trade.profit     = profit * multiplier;
                     converted_close_trade.close_time = open_trade.close_time;
 
                     usd_converted_open_trades_vector.emplace_back(converted_close_trade);
@@ -121,9 +140,7 @@ extern "C" void CreateReport(rapidjson::Value&                   request,
              Legend(),
 
              Line({}, props({{"type", "monotone"}, {"dataKey", "profit"}, {"stroke", "#4A90E2"}})),
-
              Line({}, props({{"type", "monotone"}, {"dataKey", "loss"}, {"stroke", "#7ED321"}})),
-
              Line(
                  {},
                  props({{"type", "monotone"}, {"dataKey", "profit/loss"}, {"stroke", "#F5A623"}}))},
@@ -144,7 +161,6 @@ extern "C" void CreateReport(rapidjson::Value&                   request,
 
                 Line({},
                      props({{"type", "monotone"}, {"dataKey", "profit"}, {"stroke", "#4A90E2"}})),
-
                 Line({}, props({{"type", "monotone"}, {"dataKey", "loss"}, {"stroke", "#7ED321"}})),
             },
             props({{"data", trades_count_chart_data}}))},
@@ -168,7 +184,6 @@ extern "C" void CreateReport(rapidjson::Value&                   request,
         utils::CreateTopProfitOrdersVector(close_trades_vector);
     TableBuilder top_close_profit_orders_table_builder("TopCloseProfitOrdersTable");
 
-    // Table props
     top_close_profit_orders_table_builder.SetIdColumn("order");
     top_close_profit_orders_table_builder.SetOrderBy("profit", "DESC");
     top_close_profit_orders_table_builder.EnableAutoSave(false);
@@ -176,7 +191,6 @@ extern "C" void CreateReport(rapidjson::Value&                   request,
     top_close_profit_orders_table_builder.EnableBookmarksButton(false);
     top_close_profit_orders_table_builder.EnableExportButton(true);
 
-    // Columns
     top_close_profit_orders_table_builder.AddColumn({"order", "ORDER", 1, search_filter});
     top_close_profit_orders_table_builder.AddColumn({"login", "LOGIN", 2, search_filter});
     top_close_profit_orders_table_builder.AddColumn({"name", "NAME", 3, search_filter});
@@ -188,28 +202,30 @@ extern "C" void CreateReport(rapidjson::Value&                   request,
         {"close_price", "CLOSE_PRICE", 8, search_filter});
     top_close_profit_orders_table_builder.AddColumn({"storage", "SWAP", 9, search_filter});
     top_close_profit_orders_table_builder.AddColumn({"profit", "AMOUNT", 10, search_filter});
+    top_close_profit_orders_table_builder.AddColumn({"currency", "CURRENCY", 10, search_filter});
 
     for (const auto& trade : top_close_profit_orders_vector) {
-        ReportAccountRecord account;
+        ReportAccountRecord account_record;
+        std::string currency = utils::GetGroupCurrencyByName(groups_vector, account_record.group);
 
         try {
-            server->GetAccountByLogin(trade.login, &account);
+            server->GetAccountByLogin(trade.login, &account_record);
         } catch (const std::exception& e) {
             std::cerr << "[DailyTradesReportInterface]: " << e.what() << std::endl;
         }
 
-        top_close_profit_orders_table_builder.AddRow({
-            utils::TruncateDouble(trade.order, 0),
-            utils::TruncateDouble(trade.login, 0),
-            account.name,
-            trade.symbol,
-            account.group,
-            utils::ConvertCmdToString(static_cast<int>(trade.cmd)),
-            utils::TruncateDouble(trade.volume / 100.0, 2),
-            utils::TruncateDouble(trade.close_price, 2),
-            utils::TruncateDouble(trade.storage, 2),
-            utils::TruncateDouble(trade.profit, 2),
-        });
+        top_close_profit_orders_table_builder.AddRow(
+            {utils::TruncateDouble(trade.order, 0),
+             utils::TruncateDouble(trade.login, 0),
+             account_record.name,
+             trade.symbol,
+             account_record.group,
+             utils::ConvertCmdToString(static_cast<int>(trade.cmd)),
+             utils::TruncateDouble(trade.volume / 100.0, 2),
+             utils::TruncateDouble(trade.close_price, 2),
+             utils::TruncateDouble(trade.storage, 2),
+             utils::TruncateDouble(trade.profit, 2),
+             currency});
     }
 
     const JSONObject top_close_profit_orders_table_props =
@@ -221,7 +237,6 @@ extern "C" void CreateReport(rapidjson::Value&                   request,
         utils::CreateTopLossOrdersVector(close_trades_vector);
     TableBuilder top_close_loss_orders_table_builder("TopCloseLossOrdersTable");
 
-    // Table props
     top_close_loss_orders_table_builder.SetIdColumn("order");
     top_close_loss_orders_table_builder.SetOrderBy("profit", "ASC");
     top_close_loss_orders_table_builder.EnableAutoSave(false);
@@ -229,7 +244,6 @@ extern "C" void CreateReport(rapidjson::Value&                   request,
     top_close_loss_orders_table_builder.EnableBookmarksButton(false);
     top_close_loss_orders_table_builder.EnableExportButton(true);
 
-    // Columns
     top_close_loss_orders_table_builder.AddColumn({"order", "ORDER", 1, search_filter});
     top_close_loss_orders_table_builder.AddColumn({"login", "LOGIN", 2, search_filter});
     top_close_loss_orders_table_builder.AddColumn({"name", "NAME", 3, search_filter});
@@ -240,28 +254,30 @@ extern "C" void CreateReport(rapidjson::Value&                   request,
     top_close_loss_orders_table_builder.AddColumn({"close_price", "CLOSE_PRICE", 8, search_filter});
     top_close_loss_orders_table_builder.AddColumn({"storage", "SWAP", 9, search_filter});
     top_close_loss_orders_table_builder.AddColumn({"profit", "AMOUNT", 10, search_filter});
+    top_close_loss_orders_table_builder.AddColumn({"currency", "CURRENCY", 11, search_filter});
 
     for (const auto& trade : top_close_loss_orders_vector) {
-        ReportAccountRecord account;
+        ReportAccountRecord account_record;
+        std::string currency = utils::GetGroupCurrencyByName(groups_vector, account_record.group);
 
         try {
-            server->GetAccountByLogin(trade.login, &account);
+            server->GetAccountByLogin(trade.login, &account_record);
         } catch (const std::exception& e) {
             std::cerr << "[DailyTradesReportInterface]: " << e.what() << std::endl;
         }
 
-        top_close_loss_orders_table_builder.AddRow({
-            utils::TruncateDouble(trade.order, 0),
-            utils::TruncateDouble(trade.login, 0),
-            account.name,
-            trade.symbol,
-            account.group,
-            utils::ConvertCmdToString(static_cast<int>(trade.cmd)),
-            utils::TruncateDouble(trade.volume / 100.0, 2),
-            utils::TruncateDouble(trade.close_price, 2),
-            utils::TruncateDouble(trade.storage, 2),
-            utils::TruncateDouble(trade.profit, 2),
-        });
+        top_close_loss_orders_table_builder.AddRow(
+            {utils::TruncateDouble(trade.order, 0),
+             utils::TruncateDouble(trade.login, 0),
+             account_record.name,
+             trade.symbol,
+             account_record.group,
+             utils::ConvertCmdToString(static_cast<int>(trade.cmd)),
+             utils::TruncateDouble(trade.volume / 100.0, 2),
+             utils::TruncateDouble(trade.close_price, 2),
+             utils::TruncateDouble(trade.storage, 2),
+             utils::TruncateDouble(trade.profit, 2),
+             currency});
     }
 
     const JSONObject top_close_loss_orders_table_props =
@@ -294,7 +310,6 @@ extern "C" void CreateReport(rapidjson::Value&                   request,
         utils::CreateTopProfitOrdersVector(open_trades_vector);
     TableBuilder top_open_profit_orders_table_builder("TopOpenProfitOrdersTable");
 
-    // Table props
     top_open_profit_orders_table_builder.SetIdColumn("order");
     top_open_profit_orders_table_builder.SetOrderBy("profit", "DESC");
     top_open_profit_orders_table_builder.EnableAutoSave(false);
@@ -302,7 +317,6 @@ extern "C" void CreateReport(rapidjson::Value&                   request,
     top_open_profit_orders_table_builder.EnableBookmarksButton(false);
     top_open_profit_orders_table_builder.EnableExportButton(true);
 
-    // Columns
     top_open_profit_orders_table_builder.AddColumn({"order", "ORDER", 1, search_filter});
     top_open_profit_orders_table_builder.AddColumn({"login", "LOGIN", 2, search_filter});
     top_open_profit_orders_table_builder.AddColumn({"name", "NAME", 3, search_filter});
@@ -313,28 +327,30 @@ extern "C" void CreateReport(rapidjson::Value&                   request,
     top_open_profit_orders_table_builder.AddColumn({"open_price", "OPEN_PRICE", 8, search_filter});
     top_open_profit_orders_table_builder.AddColumn({"storage", "SWAP", 9, search_filter});
     top_open_profit_orders_table_builder.AddColumn({"profit", "AMOUNT", 10, search_filter});
+    top_open_profit_orders_table_builder.AddColumn({"currency", "CURRENCY", 10, search_filter});
 
     for (const auto& trade : top_open_profit_orders_vector) {
-        ReportAccountRecord account;
+        ReportAccountRecord account_record;
+        std::string currency = utils::GetGroupCurrencyByName(groups_vector, account_record.group);
 
         try {
-            server->GetAccountByLogin(trade.login, &account);
+            server->GetAccountByLogin(trade.login, &account_record);
         } catch (const std::exception& e) {
             std::cerr << "[DailyTradesReportInterface]: " << e.what() << std::endl;
         }
 
-        top_open_profit_orders_table_builder.AddRow({
-            utils::TruncateDouble(trade.order, 0),
-            utils::TruncateDouble(trade.login, 1),
-            account.name,
-            trade.symbol,
-            account.group,
-            utils::ConvertCmdToString(static_cast<int>(trade.cmd)),
-            utils::TruncateDouble(trade.volume / 100.0, 2),
-            utils::TruncateDouble(trade.close_price, 2),
-            utils::TruncateDouble(trade.storage, 2),
-            utils::TruncateDouble(trade.profit, 2),
-        });
+        top_open_profit_orders_table_builder.AddRow(
+            {utils::TruncateDouble(trade.order, 0),
+             utils::TruncateDouble(trade.login, 1),
+             account_record.name,
+             trade.symbol,
+             account_record.group,
+             utils::ConvertCmdToString(static_cast<int>(trade.cmd)),
+             utils::TruncateDouble(trade.volume / 100.0, 2),
+             utils::TruncateDouble(trade.close_price, 2),
+             utils::TruncateDouble(trade.storage, 2),
+             utils::TruncateDouble(trade.profit, 2),
+             currency});
     }
 
     const JSONObject top_open_profit_orders_table_props =
@@ -346,7 +362,6 @@ extern "C" void CreateReport(rapidjson::Value&                   request,
         utils::CreateTopLossOrdersVector(open_trades_vector);
     TableBuilder top_open_loss_orders_table_builder("TopOpenLossOrdersTable");
 
-    // Table props
     top_open_loss_orders_table_builder.SetIdColumn("order");
     top_open_loss_orders_table_builder.SetOrderBy("profit", "ASC");
     top_open_loss_orders_table_builder.EnableAutoSave(false);
@@ -364,28 +379,30 @@ extern "C" void CreateReport(rapidjson::Value&                   request,
     top_open_loss_orders_table_builder.AddColumn({"open_price", "CLOSE_PRICE", 8, search_filter});
     top_open_loss_orders_table_builder.AddColumn({"storage", "SWAP", 9, search_filter});
     top_open_loss_orders_table_builder.AddColumn({"profit", "AMOUNT", 10, search_filter});
+    top_open_loss_orders_table_builder.AddColumn({"currency", "CURRENCY", 10, search_filter});
 
     for (const auto& trade : top_open_loss_orders_vector) {
-        ReportAccountRecord account;
+        ReportAccountRecord account_record;
+        std::string currency = utils::GetGroupCurrencyByName(groups_vector, account_record.group);
 
         try {
-            server->GetAccountByLogin(trade.login, &account);
+            server->GetAccountByLogin(trade.login, &account_record);
         } catch (const std::exception& e) {
             std::cerr << "[DailyTradesReportInterface]: " << e.what() << std::endl;
         }
 
-        top_open_loss_orders_table_builder.AddRow({
-            utils::TruncateDouble(trade.order, 0),
-            utils::TruncateDouble(trade.login, 0),
-            account.name,
-            trade.symbol,
-            account.group,
-            utils::ConvertCmdToString(static_cast<int>(trade.cmd)),
-            utils::TruncateDouble(trade.volume / 100.0, 2),
-            utils::TruncateDouble(trade.close_price, 2),
-            utils::TruncateDouble(trade.storage, 2),
-            utils::TruncateDouble(trade.profit, 2),
-        });
+        top_open_loss_orders_table_builder.AddRow(
+            {utils::TruncateDouble(trade.order, 0),
+             utils::TruncateDouble(trade.login, 0),
+             account_record.name,
+             trade.symbol,
+             account_record.group,
+             utils::ConvertCmdToString(static_cast<int>(trade.cmd)),
+             utils::TruncateDouble(trade.volume / 100.0, 2),
+             utils::TruncateDouble(trade.close_price, 2),
+             utils::TruncateDouble(trade.storage, 2),
+             utils::TruncateDouble(trade.profit, 2),
+             currency});
     }
 
     const JSONObject top_open_loss_orders_table_props =

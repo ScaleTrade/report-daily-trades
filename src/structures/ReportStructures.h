@@ -3,9 +3,9 @@
 #include <ctime>
 #include <string>
 
-struct UsdConvertedTrade {
+struct ConvertedTrade {
     time_t close_time;
-    double usd_profit;
+    double profit;
 };
 
 struct PnlDataPoint {
