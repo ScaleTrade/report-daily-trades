@@ -4,7 +4,10 @@
 
 struct ReportServerLog {
     std::string time;
-    std::string type;
-    std::string ip;
-    std::string message;
+    std::string actor_type;
+    std::string actor_id;
+    std::string action;
+    std::string status;
+    std::string source;
+    std::string detail;
 };
