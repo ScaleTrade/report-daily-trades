@@ -202,7 +202,7 @@ extern "C" void CreateReport(rapidjson::Value&                   request,
         {"close_price", "CLOSE_PRICE", 8, search_filter});
     top_close_profit_orders_table_builder.AddColumn({"storage", "SWAP", 9, search_filter});
     top_close_profit_orders_table_builder.AddColumn({"profit", "AMOUNT", 10, search_filter});
-    top_close_profit_orders_table_builder.AddColumn({"currency", "CURRENCY", 10, search_filter});
+    top_close_profit_orders_table_builder.AddColumn({"currency", "CURRENCY", 11, search_filter});
 
     for (const auto& trade : top_close_profit_orders_vector) {
         ReportAccountRecord account_record;
@@ -334,7 +334,7 @@ extern "C" void CreateReport(rapidjson::Value&                   request,
     top_open_profit_orders_table_builder.AddColumn({"open_price", "OPEN_PRICE", 8, search_filter});
     top_open_profit_orders_table_builder.AddColumn({"storage", "SWAP", 9, search_filter});
     top_open_profit_orders_table_builder.AddColumn({"profit", "AMOUNT", 10, search_filter});
-    top_open_profit_orders_table_builder.AddColumn({"currency", "CURRENCY", 10, search_filter});
+    top_open_profit_orders_table_builder.AddColumn({"currency", "CURRENCY", 11, search_filter});
 
     for (const auto& trade : top_open_profit_orders_vector) {
         ReportAccountRecord account_record;
@@ -387,7 +387,7 @@ extern "C" void CreateReport(rapidjson::Value&                   request,
     top_open_loss_orders_table_builder.AddColumn({"open_price", "CLOSE_PRICE", 8, search_filter});
     top_open_loss_orders_table_builder.AddColumn({"storage", "SWAP", 9, search_filter});
     top_open_loss_orders_table_builder.AddColumn({"profit", "AMOUNT", 10, search_filter});
-    top_open_loss_orders_table_builder.AddColumn({"currency", "CURRENCY", 10, search_filter});
+    top_open_loss_orders_table_builder.AddColumn({"currency", "CURRENCY", 11, search_filter});
 
     for (const auto& trade : top_open_loss_orders_vector) {
         ReportAccountRecord account_record;
