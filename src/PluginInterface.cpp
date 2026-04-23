@@ -215,11 +215,6 @@ extern "C" void CreateReport(rapidjson::Value&                   request,
 
         std::string currency = utils::GetGroupCurrencyByName(groups_vector, account_record.group);
 
-        std::cout << "GROUPS SIZE: " << groups_vector.size() << std::endl;
-        std::cout << "GROUP NAME: " << account_record.group << std::endl;
-        std::cout << "CURRENCY: " << currency << std::endl;
-
-
         top_close_profit_orders_table_builder.AddRow(
             {utils::TruncateDouble(trade.order, 0),
              utils::TruncateDouble(trade.login, 0),
