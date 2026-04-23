@@ -206,13 +206,14 @@ extern "C" void CreateReport(rapidjson::Value&                   request,
 
     for (const auto& trade : top_close_profit_orders_vector) {
         ReportAccountRecord account_record;
-        std::string currency = utils::GetGroupCurrencyByName(groups_vector, account_record.group);
 
         try {
             server->GetAccountByLogin(trade.login, &account_record);
         } catch (const std::exception& e) {
             std::cerr << "[DailyTradesReportInterface]: " << e.what() << std::endl;
         }
+
+        std::string currency = utils::GetGroupCurrencyByName(groups_vector, account_record.group);
 
         top_close_profit_orders_table_builder.AddRow(
             {utils::TruncateDouble(trade.order, 0),
@@ -258,13 +259,14 @@ extern "C" void CreateReport(rapidjson::Value&                   request,
 
     for (const auto& trade : top_close_loss_orders_vector) {
         ReportAccountRecord account_record;
-        std::string currency = utils::GetGroupCurrencyByName(groups_vector, account_record.group);
 
         try {
             server->GetAccountByLogin(trade.login, &account_record);
         } catch (const std::exception& e) {
             std::cerr << "[DailyTradesReportInterface]: " << e.what() << std::endl;
         }
+
+        std::string currency = utils::GetGroupCurrencyByName(groups_vector, account_record.group);
 
         top_close_loss_orders_table_builder.AddRow(
             {utils::TruncateDouble(trade.order, 0),
@@ -331,13 +333,14 @@ extern "C" void CreateReport(rapidjson::Value&                   request,
 
     for (const auto& trade : top_open_profit_orders_vector) {
         ReportAccountRecord account_record;
-        std::string currency = utils::GetGroupCurrencyByName(groups_vector, account_record.group);
 
         try {
             server->GetAccountByLogin(trade.login, &account_record);
         } catch (const std::exception& e) {
             std::cerr << "[DailyTradesReportInterface]: " << e.what() << std::endl;
         }
+
+        std::string currency = utils::GetGroupCurrencyByName(groups_vector, account_record.group);
 
         top_open_profit_orders_table_builder.AddRow(
             {utils::TruncateDouble(trade.order, 0),
@@ -383,13 +386,14 @@ extern "C" void CreateReport(rapidjson::Value&                   request,
 
     for (const auto& trade : top_open_loss_orders_vector) {
         ReportAccountRecord account_record;
-        std::string currency = utils::GetGroupCurrencyByName(groups_vector, account_record.group);
 
         try {
             server->GetAccountByLogin(trade.login, &account_record);
         } catch (const std::exception& e) {
             std::cerr << "[DailyTradesReportInterface]: " << e.what() << std::endl;
         }
+
+        std::string currency = utils::GetGroupCurrencyByName(groups_vector, account_record.group);
 
         top_open_loss_orders_table_builder.AddRow(
             {utils::TruncateDouble(trade.order, 0),
