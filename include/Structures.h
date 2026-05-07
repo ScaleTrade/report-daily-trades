@@ -193,6 +193,7 @@ enum {
     SESSION_ADMIN,                          // Сессия из под админа
     SESSION_SYSTEM,                         // Добавлена новая запись
     SESSION_FIX,                            // Добавлена новая запись
+    SESSION_CUSTOMER = 9,                   // Customer session
     SESSION_CRM_MANAGER = 10,               // Добавлена новая запись
     SESSION_CRM_ADMIN                       // Добавлена новая запись
 };
@@ -632,6 +633,8 @@ inline int FormatWebStatus(const int retcode) {
         case RET_TRADE_NO_MONEY:
         case RET_SYMBOL_USE_BY_TRADE:
         case RET_USR_HAS_TRADES:
+        case RET_USR_LOGIN_EXIST:
+        case RET_USR_ACCOUNT_EXIST:
         case RET_TRADE_HEDGE_PROHIBITED:
         case RET_TRADE_LIMIT_REACHED:
         case RET_TRADE_EXIST:
