@@ -5,6 +5,7 @@
 #include <thread>
 #include <atomic>
 #include <string>
+#include <iomanip>
 #include "ReportServerInterface.h"
 #include <rapidjson/document.h>
 #include "ast/Ast.hpp"
@@ -16,6 +17,8 @@
 using namespace ast;
 
 extern "C" {
+    int GetReportApiVersion();
+
     void AboutReport(rapidjson::Value& request,
                      rapidjson::Value& response,
                      rapidjson::Document::AllocatorType& allocator,
