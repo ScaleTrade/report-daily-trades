@@ -64,7 +64,7 @@ struct ReportAccountRecord {
     time_t lastdate = 0;
     int leverage = 0;
     int agent_account = 0;
-    time_t timestamp = 0;
+    time_t update_time = 0;
     int last_ip = 0;
     double balance = 0.0;
     double prevmonthbalance = 0.0;
@@ -82,5 +82,8 @@ struct ReportAccountRecord {
     std::string user_color = "#ffffff";
     std::string unused;
     std::string api_data;
+    int magic = 0;
+    int customer_id = 0;
     ReportMarginLevel margin;
+    int online = 0;
 };

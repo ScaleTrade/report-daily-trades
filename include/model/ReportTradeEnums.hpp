@@ -46,7 +46,10 @@ enum class ReportTradeState : int {
     RestoreRequest = 13,
     OpenUpdateRequest = 14,
     ClosedUpdateRequest = 15,
-    PendingUpdateRequest = 16
+    PendingUpdateRequest = 16,
+    FinanceOpenPending = 17,
+    FinanceOpenDecline = 18,
+    PartialCloseRequest = 19
 };
 
 enum class ReportTradeReason : int {
@@ -57,7 +60,8 @@ enum class ReportTradeReason : int {
     Gateway = 4,
     Mobile = 5,
     Web = 6,
-    Api = 7
+    Api = 7,
+    Prop = 8
 };
 
 enum class ReportTradeActivation : int {

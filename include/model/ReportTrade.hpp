@@ -13,6 +13,9 @@ struct ReportTradeRecord {
     int digits = 2;
     ReportTradeCommand cmd = ReportTradeCommand::Nothing;
     int volume = 0;
+    int parent_order = 0;
+    int closed_volume = 0;
+    int partial_close_volume = 0;
     time_t open_time = 0;
     ReportTradeState state = ReportTradeState::NoChange;
     double open_price = 0.0;
