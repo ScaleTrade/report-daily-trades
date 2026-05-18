@@ -15,7 +15,7 @@
 
 class Core;
 
-inline int REPORT_SERVER_API = 1;
+inline int REPORT_SERVER_API = 2;
 
 class ReportServerInterface {
 public:
