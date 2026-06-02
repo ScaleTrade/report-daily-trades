@@ -6,11 +6,13 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 file(GLOB_RECURSE UTILS_SOURCE      src/utils/*.cpp)
 file(GLOB_RECURSE STRUCTURES_SOURCE src/structures/*.cpp)
+file(GLOB_RECURSE VALIDATORS_SOURCE src/validators/*.cpp)
 
 set(SOURCES
         src/PluginInterface.cpp
         ${UTILS_SOURCE}
         ${STRUCTURES_SOURCE}
+        ${VALIDATORS_SOURCE}
 )
 
 add_library(DailyTradesReport SHARED ${SOURCES})

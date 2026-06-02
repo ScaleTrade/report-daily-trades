@@ -7,6 +7,7 @@
 #include <iomanip>
 #include <iostream>
 #include <map>
+#include <set>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -48,4 +49,8 @@ namespace utils {
     CreateTopLossOrdersVector(const std::vector<ReportTradeRecord>& trades);
 
     std::string ConvertCmdToString(const int cmd);
+
+    std::string Trim(const std::string& str);
+
+    std::set<std::string> SplitToSet(const std::string& str);
 } // namespace utils

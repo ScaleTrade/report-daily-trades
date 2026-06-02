@@ -312,4 +312,24 @@ namespace utils {
                 return "Unknown";
         }
     }
+
+    std::string Trim(const std::string& str) {
+        const auto begin = str.find_first_not_of(" \t");
+        if (begin == std::string::npos)
+            return "";
+        const auto end = str.find_last_not_of(" \t");
+        return str.substr(begin, end - begin + 1);
+    }
+
+    std::set<std::string> SplitToSet(const std::string& str) {
+        std::set<std::string> out;
+        std::stringstream     ss(str);
+        std::string           item;
+        while (std::getline(ss, item, ',')) {
+            const std::string trimmed = Trim(item);
+            if (!trimmed.empty())
+                out.insert(trimmed);
+        }
+        return out;
+    }
 } // namespace utils
