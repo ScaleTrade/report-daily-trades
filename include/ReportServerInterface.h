@@ -15,7 +15,7 @@
 
 class Core;
 
-inline int REPORT_SERVER_API = 2;
+inline int REPORT_SERVER_API = 3;
 
 class ReportServerInterface {
 public:
@@ -55,6 +55,7 @@ public:
     virtual int CalculateConvertRateByCurrency(const std::string& from_cur, const std::string& to_cur, int cmd, double* multiplier) = 0;
 
     virtual int GetSymbol(const std::string& symbol, ReportSymbolRecord* cs) = 0;
+    virtual int MatchWildCardGroup(const std::string& mask, const std::string& group) = 0;
     virtual int GetGroup(const std::string& group_name, ReportGroupRecord* group) = 0;
     virtual int GetAllGroups(std::vector<ReportGroupRecord>* groups) = 0;
 

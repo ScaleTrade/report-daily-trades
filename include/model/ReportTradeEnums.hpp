@@ -61,7 +61,13 @@ enum class ReportTradeReason : int {
     Mobile = 5,
     Web = 6,
     Api = 7,
-    Prop = 8
+    Prop = 8,
+    CopyTrade = 9,
+    CopyReward = 10,
+    CashierDeposit = 11,
+    CashierWithdrawal = 12,
+    CashierRefund = 13,
+    CashierChargeback = 14
 };
 
 enum class ReportTradeActivation : int {
