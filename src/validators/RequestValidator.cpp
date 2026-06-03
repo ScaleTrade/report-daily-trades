@@ -100,38 +100,6 @@ ValidationResult RequestValidator::ValidateDailyGroup(const rapidjson::Value& re
         return result;
     }
 
-    const std::string group = request["group"].GetString();
-
-    if (group == "*") {
-        result.allowed = true;
-        result.code    = 200;
-        result.message = "ValidateDailyGroup: access granted (all groups)";
-        return result;
-    }
-
-    const rapidjson::Value& access = request["__access"];
-    const std::string       groups = access["groups"].GetString();
-
-    if (groups == "*") {
-        result.allowed = true;
-        result.code    = 200;
-        result.message = "ValidateDailyGroup: access granted (user has all groups)";
-        return result;
-    }
-
-    const std::set<std::string> allowed_groups   = utils::SplitToSet(groups);
-    const std::set<std::string> requested_groups = utils::SplitToSet(group);
-
-    for (const std::string& requested_group : requested_groups) {
-        if (allowed_groups.find(requested_group) == allowed_groups.end()) {
-            result.allowed = false;
-            result.code    = 403;
-            result.message =
-                "ValidateDailyGroup: access denied for group '" + requested_group + "'";
-            return result;
-        }
-    }
-
     result.allowed = true;
     result.code    = 200;
     result.message = "ValidateDailyGroup: access granted";
@@ -153,15 +121,6 @@ ValidationResult RequestValidator::ValidateSymbol(const rapidjson::Value& reques
     result.allowed = true;
     result.code    = 200;
     result.message = "Symbol: access granted (stub)";
-    return result;
-}
-
-ValidationResult RequestValidator::ValidateGroup(const rapidjson::Value& request,
-                                                 ReportServerInterface*  server) {
-    ValidationResult result;
-    result.allowed = true;
-    result.code    = 200;
-    result.message = "Group: access granted (stub)";
     return result;
 }
 
@@ -190,41 +149,48 @@ ValidationResult RequestValidator::ValidateRangeGroup(const rapidjson::Value& re
         return result;
     }
 
-    const std::string group = request["group"].GetString();
+    const rapidjson::Value& access        = request["__access"];
+    const std::string       access_groups = access["groups"].GetString();
 
-    if (group == "*") {
-        result.allowed = true;
-        result.code    = 200;
-        result.message = "ValidateRangeGroup: access granted (all groups)";
+    int match_result = 0;
+    try {
+        match_result = server->MatchWildCardGroup(access_groups, request["group"].GetString());
+    } catch (const std::exception& e) {
+        result.allowed = false;
+        result.code    = 404;
+        result.message = "ValidateRangeAccount: MatchWildCardGroup error";
         return result;
     }
 
-    const rapidjson::Value& access = request["__access"];
-    const std::string       groups = access["groups"].GetString();
+    std::cout << "MatchWildCardGroup: " << match_result << std::endl;
 
-    if (groups == "*") {
-        result.allowed = true;
-        result.code    = 200;
-        result.message = "ValidateRangeGroup: access granted (user has all groups)";
+    if (match_result != 0) {
+        result.allowed = false;
+        result.code    = 403;
+        result.message = "ValidateRangeGroup: access denied (group does not match required mask)";
         return result;
-    }
-
-    const std::set<std::string> allowed_groups   = utils::SplitToSet(groups);
-    const std::set<std::string> requested_groups = utils::SplitToSet(group);
-
-    for (const std::string& requested_group : requested_groups) {
-        if (allowed_groups.find(requested_group) == allowed_groups.end()) {
-            result.allowed = false;
-            result.code    = 403;
-            result.message =
-                "ValidateRangeGroup: access denied for group '" + requested_group + "'";
-            return result;
-        }
     }
 
     result.allowed = true;
     result.code    = 200;
     result.message = "ValidateRangeGroup: access granted";
+    return result;
+}
+
+ValidationResult RequestValidator::ValidateGroup(const rapidjson::Value& request,
+                                                 ReportServerInterface*  server) {
+    ValidationResult result;
+
+    if (!request.HasMember("group") || !request["group"].IsString()) {
+        result.allowed = false;
+        result.code    = 400;
+        result.message = "ValidateGroup: missing or invalid 'group'";
+        return result;
+    }
+
+    result.allowed = true;
+    result.code    = 200;
+    result.message = "ValidateGroup: access granted";
     return result;
 }
 

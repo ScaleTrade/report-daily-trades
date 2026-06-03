@@ -1,14 +1,13 @@
 #pragma once
 
+#include <iostream>
 #include <string>
 
-#include "rapidjson/document.h"
-
-#include "utils/Utils.h"
-
 #include "ReportServerInterface.h"
+#include "rapidjson/document.h"
 #include "structures/ReportType.h"
 #include "structures/ValidationResult.h"
+#include "utils/Utils.h"
 
 class RequestValidator {
 public:
