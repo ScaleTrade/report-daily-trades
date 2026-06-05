@@ -100,6 +100,9 @@ ValidationResult RequestValidator::ValidateDailyGroup(const rapidjson::Value& re
         return result;
     }
 
+    const rapidjson::Value& access        = request["__access"];
+    const std::string       access_groups = access["groups"].GetString();
+
     const std::string requested_groups = request["group"].GetString();
     if (requested_groups == "*") {
         result.allowed = true;
@@ -108,31 +111,32 @@ ValidationResult RequestValidator::ValidateDailyGroup(const rapidjson::Value& re
         return result;
     }
 
-    const rapidjson::Value& access        = request["__access"];
-    const std::string       access_groups = access["groups"].GetString();
+    std::set<std::string> groups_set = utils::SplitToSet(requested_groups);
 
-    int match_result = 0;
-    try {
-        match_result = server->MatchWildCardGroup(access_groups, request["group"].GetString());
-    } catch (const std::exception& e) {
-        result.allowed = false;
-        result.code    = 404;
-        result.message = "ValidateDailyGroup: MatchWildCardGroup error";
-        return result;
+    for (const auto& group : groups_set) {
+        int match_result = 0;
+        try {
+            match_result = server->MatchWildCardGroup(access_groups, group);
+        } catch (const std::exception& e) {
+            result.allowed = false;
+            result.code    = 404;
+            result.message = "ValidateDailyGroup: MatchWildCardGroup error for group: " + group;
+            return result;
+        }
+
+        // Если хотя бы одна группа не прошла проверку
+        if (match_result != 0) {
+            result.allowed = false;
+            result.code    = 403;
+            result.message = "ValidateDailyGroup: access denied for group: " + group;
+            return result;
+        }
     }
 
-    std::cout << "MatchWildCardGroup: " << match_result << std::endl;
-
-    if (match_result != 0) {
-        result.allowed = false;
-        result.code    = 403;
-        result.message = "ValidateDailyGroup: access denied (group does not match required mask)";
-        return result;
-    }
-
+    // Все группы прошли проверку
     result.allowed = true;
     result.code    = 200;
-    result.message = "ValidateDailyGroup: access granted";
+    result.message = "ValidateDailyGroup: all groups validated successfully";
     return result;
 }
 
@@ -190,28 +194,32 @@ ValidationResult RequestValidator::ValidateRangeGroup(const rapidjson::Value& re
         return result;
     }
 
-    int match_result = 0;
-    try {
-        match_result = server->MatchWildCardGroup(access_groups, request["group"].GetString());
-    } catch (const std::exception& e) {
-        result.allowed = false;
-        result.code    = 404;
-        result.message = "ValidateRangeGroup: MatchWildCardGroup error";
-        return result;
+    std::set<std::string> groups_set = utils::SplitToSet(requested_groups);
+
+    for (const auto& group : groups_set) {
+        int match_result = 0;
+        try {
+            match_result = server->MatchWildCardGroup(access_groups, group);
+        } catch (const std::exception& e) {
+            result.allowed = false;
+            result.code    = 404;
+            result.message = "ValidateRangeGroup: MatchWildCardGroup error for group: " + group;
+            return result;
+        }
+
+        // Если хотя бы одна группа не прошла проверку
+        if (match_result != 0) {
+            result.allowed = false;
+            result.code    = 403;
+            result.message = "ValidateRangeGroup: access denied for group: " + group;
+            return result;
+        }
     }
 
-    std::cout << "MatchWildCardGroup: " << match_result << std::endl;
-
-    if (match_result != 0) {
-        result.allowed = false;
-        result.code    = 403;
-        result.message = "ValidateRangeGroup: access denied (group does not match required mask)";
-        return result;
-    }
-
+    // Все группы прошли проверку
     result.allowed = true;
     result.code    = 200;
-    result.message = "ValidateRangeGroup: access granted";
+    result.message = "ValidateRangeGroup: all groups validated successfully";
     return result;
 }
 
@@ -226,6 +234,9 @@ ValidationResult RequestValidator::ValidateGroup(const rapidjson::Value& request
         return result;
     }
 
+    const rapidjson::Value& access        = request["__access"];
+    const std::string       access_groups = access["groups"].GetString();
+
     const std::string requested_groups = request["group"].GetString();
     if (requested_groups == "*") {
         result.allowed = true;
@@ -234,31 +245,32 @@ ValidationResult RequestValidator::ValidateGroup(const rapidjson::Value& request
         return result;
     }
 
-    const rapidjson::Value& access        = request["__access"];
-    const std::string       access_groups = access["groups"].GetString();
+    std::set<std::string> groups_set = utils::SplitToSet(requested_groups);
 
-    int match_result = 0;
-    try {
-        match_result = server->MatchWildCardGroup(access_groups, request["group"].GetString());
-    } catch (const std::exception& e) {
-        result.allowed = false;
-        result.code    = 404;
-        result.message = "ValidateGroup: MatchWildCardGroup error";
-        return result;
+    for (const auto& group : groups_set) {
+        int match_result = 0;
+        try {
+            match_result = server->MatchWildCardGroup(access_groups, group);
+        } catch (const std::exception& e) {
+            result.allowed = false;
+            result.code    = 404;
+            result.message = "ValidateGroup: MatchWildCardGroup error for group: " + group;
+            return result;
+        }
+
+        // Если хотя бы одна группа не прошла проверку
+        if (match_result != 0) {
+            result.allowed = false;
+            result.code    = 403;
+            result.message = "ValidateGroup: access denied for group: " + group;
+            return result;
+        }
     }
 
-    std::cout << "MatchWildCardGroup: " << match_result << std::endl;
-
-    if (match_result != 0) {
-        result.allowed = false;
-        result.code    = 403;
-        result.message = "ValidateGroup: access denied (group does not match required mask)";
-        return result;
-    }
-
+    // Все группы прошли проверку
     result.allowed = true;
     result.code    = 200;
-    result.message = "ValidateGroup: access granted";
+    result.message = "ValidateGroup: all groups validated successfully";
     return result;
 }
 
