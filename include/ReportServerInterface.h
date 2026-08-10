@@ -15,7 +15,15 @@
 
 class Core;
 
-inline int REPORT_SERVER_API = 3;
+inline constexpr int REPORT_SERVER_API = 4;
+
+#if defined(__GNUC__)
+#define REPORT_MODULE_EXPORT __attribute__((visibility("default")))
+#else
+#define REPORT_MODULE_EXPORT
+#endif
+
+extern "C" REPORT_MODULE_EXPORT int GetReportApiVersion();
 
 class ReportServerInterface {
 public:
