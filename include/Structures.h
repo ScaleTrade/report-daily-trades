@@ -182,7 +182,8 @@ enum EventRecordType {
     EV_RECORD_RESTORE,         // Востановлена запись
     EV_RECORD_ARCHIVE,         // Удалена запись
     EV_RECORD_ACTIVATE_TRADE,  // Трейд активировался запись
-    EV_RECORD_CLOSE_TRADE      // Трейд закрылся запись
+    EV_RECORD_CLOSE_TRADE,     // Трейд закрылся запись
+    EV_RECORD_REJECT_TRADE     // Заявка на открытие отклонена до создания трейда
 };
 
 //--- Session type
@@ -641,6 +642,7 @@ inline int FormatWebStatus(const int retcode) {
         case RET_TRADE_HAS_OPEN:
         case RET_DUPLICATE_RECORD:
         case RET_CFG_DUPLICATE:
+        case RET_CFG_NOT_EMPTY:
             return 409;
         case RET_TRADE_MARKET_CLOSED:
             return 423;

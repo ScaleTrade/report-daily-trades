@@ -9,6 +9,7 @@ struct ReportMarginLevel {
     int leverage = 0;
     double balance = 0.0;
     double credit = 0.0;
+    double bonus = 0.0;
     double equity = 0.0;
     double profit = 0.0;
     double storage = 0.0;
@@ -27,6 +28,7 @@ struct ReportEquityRecord {
     double balance = 0.0;
     double prevbalance = 0.0;
     double credit = 0.0;
+    double bonus = 0.0;
     double equity = 0.0;
     double profit = 0.0;
     double storage = 0.0;
@@ -70,6 +72,7 @@ struct ReportAccountRecord {
     double prevmonthbalance = 0.0;
     double prevbalance = 0.0;
     double credit = 0.0;
+    double bonus = 0.0;
     double interestrate = 0.0;
     double taxes = 0.0;
     double prevmonthequity = 0.0;
